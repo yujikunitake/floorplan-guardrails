@@ -1,0 +1,38 @@
+[project]
+name = "floorplan-guardrails"
+version = "0.0.0"
+description = "An LLM proposes a floor plan; a deterministic validator checks it against design rules."
+readme = "README.md"
+requires-python = ">=3.12,<3.13"
+license = "MIT"
+# As dependências de runtime entram junto com o código que as usa
+# (pydantic na Fase 1, matplotlib na Fase 2, o agente na Fase 3).
+dependencies = []
+
+[dependency-groups]
+dev = [
+    "pytest>=8.3",
+    "ruff>=0.6",
+]
+
+[tool.uv]
+# Ainda não há pacote a construir: `src/floorplan_guardrails/` chega na Fase 1,
+# e com ele um [build-system]. Até lá isto impede o uv de tentar buildar.
+package = false
+
+[tool.ruff]
+target-version = "py312"
+# O CLAUDE.md exige lint e formatação também nos notebooks da oficina.
+extend-include = ["*.ipynb"]
+
+[tool.ruff.lint]
+select = [
+    "E",   # pycodestyle
+    "F",   # pyflakes
+    "I",   # isort
+    "UP",  # pyupgrade
+    "B",   # flake8-bugbear
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
