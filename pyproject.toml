@@ -9,6 +9,7 @@ license = "MIT"
 # (matplotlib na Fase 2, o agente na Fase 3).
 dependencies = [
     "pydantic>=2.9",
+    "pyyaml>=6.0",
 ]
 
 [dependency-groups]

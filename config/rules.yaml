@@ -1,0 +1,75 @@
+# ---------------------------------------------------------------------------
+# Regras de projeto
+# ---------------------------------------------------------------------------
+# Este é o arquivo do nível 3 da oficina. Mude um número aqui, recarregue as
+# regras e rode a mesma descrição de casa: o validador passa a exigir outra
+# coisa, e o modelo precisa se virar para atender.
+#
+# Como ler os valores:
+#
+#   null        a regra não se aplica a esse tipo de cômodo
+#   divisor     "1/6 da área do piso" se escreve como 6, que é como a lei
+#               costuma redigir a exigência
+#
+# ATENÇÃO: os valores abaixo são PROVISÓRIOS. Eles têm a ordem de grandeza
+# certa, mas ainda não foram conferidos contra o código de obras. Não use
+# esta ferramenta para decidir nada de verdade.
+# ---------------------------------------------------------------------------
+
+# Simplificação de ventilação. Não é norma, é modelagem: a área que de fato
+# ventila é a área da janela multiplicada por este fator. 0,50 corresponde a
+# uma janela de correr, em que metade do vão abre.
+opening_factor: 0.50
+
+rules:
+  min_area:
+    description: "Área mínima do piso do cômodo."
+    unit: "m²"
+    source: "PROVISÓRIO: a confirmar na Etapa 1"
+    values:
+      living_room: 8.0
+      bedroom: 8.0
+      kitchen: 4.0
+      bathroom: 1.5
+      laundry: 2.0
+      hallway: null
+      other: null
+
+  min_dimension:
+    description: "Menor dimensão do cômodo. Num corredor, é a largura da circulação."
+    unit: "m"
+    source: "PROVISÓRIO: a confirmar na Etapa 1"
+    values:
+      living_room: 2.40
+      bedroom: 2.40
+      kitchen: 1.50
+      bathroom: 1.00
+      laundry: 1.20
+      hallway: 0.90
+      other: null
+
+  lighting_divisor:
+    description: "A área de janela exigida é a área do piso dividida por este número."
+    unit: "divisor da área do piso"
+    source: "PROVISÓRIO: a confirmar na Etapa 1"
+    values:
+      living_room: 6.0
+      bedroom: 6.0
+      kitchen: 8.0
+      bathroom: 10.0
+      laundry: 8.0
+      hallway: null
+      other: null
+
+  ventilation_divisor:
+    description: "A área de ventilação exigida é a área de janela exigida dividida por este número."
+    unit: "divisor da área de janela exigida"
+    source: "PROVISÓRIO: a confirmar na Etapa 1"
+    values:
+      living_room: 2.0
+      bedroom: 2.0
+      kitchen: 2.0
+      bathroom: 2.0
+      laundry: 2.0
+      hallway: null
+      other: null
