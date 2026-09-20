@@ -1,0 +1,27 @@
+version: 2
+
+# O prefixo importa: sem ele o Dependabot titula os PRs como
+# `chore(deps): bump ...`, e `deps` não está na lista fechada de escopos,
+# então o próprio check `pr-title` reprovaria todo PR automático.
+updates:
+  - package-ecosystem: "uv"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    commit-message:
+      prefix: "chore(repo)"
+    groups:
+      python:
+        patterns:
+          - "*"
+
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    commit-message:
+      prefix: "chore(repo)"
+    groups:
+      actions:
+        patterns:
+          - "*"
