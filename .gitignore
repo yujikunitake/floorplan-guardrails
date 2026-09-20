@@ -216,3 +216,10 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# floorplan-guardrails
+#   Execuções do laço: um JSONL por execução, com a descrição e as plantas.
+runs/
+#   Resultados da avaliação. O relatório que o autor decidir publicar entra
+#   com `git add -f`.
+eval/results/

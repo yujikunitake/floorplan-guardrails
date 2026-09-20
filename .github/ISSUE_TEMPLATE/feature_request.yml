@@ -1,0 +1,53 @@
+name: Feature request
+description: Propose a change to the scope or behaviour of the project.
+labels: ["enhancement"]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem
+      description: What is hard or impossible today?
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposal
+    validations:
+      required: true
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options:
+        - schema
+        - geometry
+        - rules
+        - validator
+        - renderer
+        - generator
+        - loop
+        - notebook
+        - eval
+        - devcontainer
+        - ci
+        - docs
+        - repo
+    validations:
+      required: true
+  - type: textarea
+    id: dependencies
+    attributes:
+      label: New dependencies
+      description: >
+        Every new dependency is one more failure point in the workshop setup.
+        If this needs one, justify it. Write "none" otherwise.
+    validations:
+      required: true
+  - type: checkboxes
+    id: scope
+    attributes:
+      label: Scope check
+      options:
+        - label: This fits the declared scope (single storey, axis-aligned rectangular rooms, doors and windows, up to ~10 rooms).
+          required: true

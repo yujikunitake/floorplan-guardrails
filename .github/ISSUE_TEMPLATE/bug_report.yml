@@ -1,0 +1,62 @@
+name: Bug report
+description: Something behaves differently from what the plan or the docs describe.
+labels: ["bug"]
+body:
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened
+      description: Include the exact error message or the wrong output.
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: What you expected
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      description: Commands, notebook cells or the house description you used.
+      placeholder: |
+        1. ...
+        2. ...
+    validations:
+      required: true
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options:
+        - schema
+        - geometry
+        - rules
+        - validator
+        - renderer
+        - generator
+        - loop
+        - notebook
+        - eval
+        - devcontainer
+        - ci
+        - docs
+        - not sure
+    validations:
+      required: true
+  - type: input
+    id: environment
+    attributes:
+      label: Environment
+      description: Codespaces or local, and Python version.
+      placeholder: Codespaces, Python 3.12
+    validations:
+      required: true
+  - type: checkboxes
+    id: no-secrets
+    attributes:
+      label: Before submitting
+      options:
+        - label: This report contains no API keys, endpoints or other secrets.
+          required: true
