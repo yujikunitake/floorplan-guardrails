@@ -1,0 +1,24 @@
+name: release-please
+
+# Abre e mantém um PR de release com CHANGELOG e versão semântica a partir
+# dos commits da `main`.
+#
+# O token é um PAT, não o GITHUB_TOKEN: PR aberto pelo GITHUB_TOKEN não
+# dispara workflows de `pull_request`, então os checks obrigatórios ficariam
+# eternamente pendentes e o PR de release nunca poderia ser mesclado.
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  release-please:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: googleapis/release-please-action@v5
+        with:
+          token: ${{ secrets.RELEASE_PLEASE_TOKEN }}
+          config-file: release-please-config.json
+          manifest-file: .release-please-manifest.json
