@@ -8,6 +8,7 @@ license = "MIT"
 # As dependências de runtime entram junto com o código que as usa
 # (matplotlib na Fase 2, o agente na Fase 3).
 dependencies = [
+    "matplotlib>=3.9",
     "pydantic>=2.9",
     "pyyaml>=6.0",
 ]
