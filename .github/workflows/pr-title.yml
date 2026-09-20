@@ -1,0 +1,53 @@
+name: pr-title
+
+# O título do PR vira o commit na `main` (squash com título do PR), então ele
+# precisa seguir Conventional Commits com a lista fechada de escopos do projeto.
+on:
+  pull_request:
+    types: [opened, edited, reopened, synchronize]
+
+permissions:
+  contents: read
+
+jobs:
+  pr-title:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check the PR title
+        env:
+          # Via env, nunca interpolado direto no script: o título é texto
+          # controlado por quem abre o PR.
+          PR_TITLE: ${{ github.event.pull_request.title }}
+        run: |
+          set -uo pipefail
+
+          types='feat|fix|docs|test|refactor|chore|ci|build|perf'
+          scopes='schema|geometry|validator|rules|renderer|generator|loop|notebook|eval|devcontainer|ci|docs|repo'
+          pattern="^($types)\(($scopes)\): [a-z]"
+
+          failed=0
+          fail() { echo "::error::$1"; failed=1; }
+
+          echo "Title: $PR_TITLE"
+
+          if [[ ! "$PR_TITLE" =~ $pattern ]]; then
+            fail "Title must be 'type(scope): description', with a type and a scope from the closed lists below, and a description starting in lowercase."
+          fi
+
+          if [ "${#PR_TITLE}" -gt 72 ]; then
+            fail "Title is ${#PR_TITLE} characters; the limit is 72."
+          fi
+
+          if [[ "$PR_TITLE" == *. ]]; then
+            fail "Title must not end with a period."
+          fi
+
+          if [ "$failed" -ne 0 ]; then
+            echo
+            echo "Allowed types:  ${types//|/, }"
+            echo "Allowed scopes: ${scopes//|/, }"
+            echo "Example:        feat(validator): add overlap detection between rooms"
+            exit 1
+          fi
+
+          echo "Title is valid."

@@ -1,0 +1,44 @@
+name: devcontainer
+
+# O botão do Codespaces é o passo 1 da oficina: se o ambiente não sobe,
+# a oficina não acontece. Roda só quando o ambiente ou as dependências mudam.
+on:
+  pull_request:
+    paths:
+      - .devcontainer/**
+      - pyproject.toml
+      - uv.lock
+      - .python-version
+      - .github/workflows/devcontainer.yml
+  push:
+    branches: [main]
+    paths:
+      - .devcontainer/**
+      - pyproject.toml
+      - uv.lock
+      - .python-version
+      - .github/workflows/devcontainer.yml
+
+permissions:
+  contents: read
+
+jobs:
+  devcontainer:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - name: Skip until .devcontainer exists
+        id: guard
+        run: |
+          if [ -d .devcontainer ]; then
+            echo "present=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "present=false" >> "$GITHUB_OUTPUT"
+            echo "No .devcontainer/ yet; it arrives in Phase 4."
+          fi
+      - name: Build the dev container
+        if: steps.guard.outputs.present == 'true'
+        uses: devcontainers/ci@v0.3
+        with:
+          push: never
+          runCmd: uv run pytest

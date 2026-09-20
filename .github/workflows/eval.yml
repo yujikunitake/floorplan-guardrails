@@ -1,0 +1,29 @@
+name: eval
+
+# Única workflow que fala com o Azure de verdade, e só sob demanda:
+# as chaves ficam em Secrets do repositório, nunca no código.
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  eval:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: astral-sh/setup-uv@v10
+      - run: uv sync --frozen
+      - name: Run the evaluation suite
+        env:
+          AZURE_OPENAI_ENDPOINT: ${{ secrets.AZURE_OPENAI_ENDPOINT }}
+          AZURE_OPENAI_API_KEY: ${{ secrets.AZURE_OPENAI_API_KEY }}
+          AZURE_OPENAI_DEPLOYMENT: ${{ secrets.AZURE_OPENAI_DEPLOYMENT }}
+          AZURE_OPENAI_API_VERSION: ${{ secrets.AZURE_OPENAI_API_VERSION }}
+        run: |
+          if [ ! -d eval ]; then
+            echo "The evaluation suite arrives in Phase 5."
+            exit 0
+          fi
+          uv run python -m eval.run

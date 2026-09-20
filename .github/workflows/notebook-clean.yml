@@ -1,0 +1,61 @@
+name: notebook-clean
+
+# Notebook com saídas salva no git carrega resultado de execução e, pior,
+# pode carregar chave colada numa célula. O CI rejeita.
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  notebook-clean:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - name: Check notebooks have no saved outputs
+        run: |
+          python3 - <<'PY'
+          import json
+          import sys
+          from pathlib import Path
+
+          SKIP = {".git", ".venv", "node_modules", ".ipynb_checkpoints"}
+
+          notebooks = [
+              p
+              for p in Path().rglob("*.ipynb")
+              if not SKIP.intersection(p.parts)
+          ]
+
+          if not notebooks:
+              print("No notebooks tracked yet.")
+              sys.exit(0)
+
+          dirty = []
+          for path in notebooks:
+              try:
+                  nb = json.loads(path.read_text(encoding="utf-8"))
+              except (OSError, json.JSONDecodeError) as exc:
+                  print(f"::error file={path}::Could not parse notebook: {exc}")
+                  dirty.append(path)
+                  continue
+
+              for i, cell in enumerate(nb.get("cells", [])):
+                  if cell.get("cell_type") != "code":
+                      continue
+                  if cell.get("outputs") or cell.get("execution_count") is not None:
+                      print(f"::error file={path}::Cell {i} has saved output or an execution count.")
+                      dirty.append(path)
+                      break
+              else:
+                  print(f"clean: {path}")
+
+          if dirty:
+              print()
+              print("Clear the outputs before committing, for example:")
+              print("  jupyter nbconvert --clear-output --inplace <notebook>")
+              sys.exit(1)
+          PY
