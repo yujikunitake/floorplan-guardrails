@@ -2,6 +2,7 @@
 
 from floorplan_guardrails.schema import (
     EXTERIOR,
+    ROOM_TYPES,
     Door,
     FloorPlan,
     Room,
@@ -14,6 +15,7 @@ __all__ = [
     "EXTERIOR",
     "Door",
     "FloorPlan",
+    "ROOM_TYPES",
     "Room",
     "RoomType",
     "Wall",

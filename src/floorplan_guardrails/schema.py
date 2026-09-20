@@ -36,7 +36,7 @@ erro. Essa é a autoridade do validador, e é o que garante que a reprovação
 apareça como relatório legível na oficina em vez de um erro de parsing.
 """
 
-from typing import Literal
+from typing import Literal, get_args
 
 from pydantic import BaseModel, ConfigDict, Field
 
@@ -50,6 +50,9 @@ RoomType = Literal[
     "hallway",
     "other",
 ]
+
+#: Os tipos de cômodo, em forma de tupla, para percorrer e validar.
+ROOM_TYPES: tuple[RoomType, ...] = get_args(RoomType)
 
 #: As quatro paredes de um cômodo retangular.
 Wall = Literal["north", "south", "east", "west"]

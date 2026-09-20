@@ -1,0 +1,69 @@
+# ---------------------------------------------------------------------------
+# Regras de teste
+# ---------------------------------------------------------------------------
+# Cópia própria da suíte, deliberadamente separada de `config/rules.yaml`.
+# Quando os valores provisórios forem trocados pelos definitivos da Etapa 1,
+# o arquivo de produção muda e este não: os testes continuam valendo, porque
+# testam o comportamento do validador, não os números do código de obras.
+#
+# Não edite este arquivo para experimentar. Para isso existe o nível 3, que
+# mexe em `config/rules.yaml`.
+# ---------------------------------------------------------------------------
+
+# Simplificação de ventilação. Não é norma, é modelagem: a área que de fato
+# ventila é a área da janela multiplicada por este fator. 0,50 corresponde a
+# uma janela de correr, em que metade do vão abre.
+opening_factor: 0.50
+
+rules:
+  min_area:
+    description: "Área mínima do piso do cômodo."
+    unit: "m²"
+    source: "PROVISÓRIO: a confirmar na Etapa 1"
+    values:
+      living_room: 8.0
+      bedroom: 8.0
+      kitchen: 4.0
+      bathroom: 1.5
+      laundry: 2.0
+      hallway: null
+      other: null
+
+  min_dimension:
+    description: "Menor dimensão do cômodo. Num corredor, é a largura da circulação."
+    unit: "m"
+    source: "PROVISÓRIO: a confirmar na Etapa 1"
+    values:
+      living_room: 2.40
+      bedroom: 2.40
+      kitchen: 1.50
+      bathroom: 1.00
+      laundry: 1.20
+      hallway: 0.90
+      other: null
+
+  lighting_divisor:
+    description: "A área de janela exigida é a área do piso dividida por este número."
+    unit: "divisor da área do piso"
+    source: "PROVISÓRIO: a confirmar na Etapa 1"
+    values:
+      living_room: 6.0
+      bedroom: 6.0
+      kitchen: 8.0
+      bathroom: 10.0
+      laundry: 8.0
+      hallway: null
+      other: null
+
+  ventilation_divisor:
+    description: "A área de ventilação exigida é a área de janela exigida dividida por este número."
+    unit: "divisor da área de janela exigida"
+    source: "PROVISÓRIO: a confirmar na Etapa 1"
+    values:
+      living_room: 2.0
+      bedroom: 2.0
+      kitchen: 2.0
+      bathroom: 2.0
+      laundry: 2.0
+      hallway: null
+      other: null
