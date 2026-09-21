@@ -160,6 +160,21 @@ O botão *Open in GitHub Codespaces*, no início do [README](../README.md), abre
 ambiente pronto no navegador. O notebook `notebooks/oficina.ipynb` roda de cima
 para baixo e pede endpoint, deployment e chave do Azure na primeira célula.
 
+### Qual endereço copiar do portal
+
+No [portal do Azure](https://portal.azure.com), abra o recurso Azure OpenAI e
+vá em **Gerenciamento de recursos → Chaves e Ponto de Extremidade**. Copie o
+campo **Ponto de extremidade**, que tem a forma
+`https://seu-recurso.openai.azure.com/`. A chave está na mesma página: tanto
+**CHAVE 1** quanto **CHAVE 2** servem.
+
+O portal mostra outras URLs para o mesmo recurso, e o notebook aceita todas:
+o endpoint do projeto na visão geral do Foundry (`…services.ai.azure.com/api/projects/…`),
+o domínio `…cognitiveservices.azure.com`, ou a URI de destino da página do
+deployment, que termina em `api-version=…`. De qualquer uma delas o código
+aproveita só o endereço do recurso. Se a URL colada não for de um recurso do
+Azure, a célula diz o que copiar e pede de novo.
+
 Três exercícios, na ordem em que valem a pena:
 
 1. Descreva uma casa e acompanhe o laço. Antes de olhar o resultado, tente prever
