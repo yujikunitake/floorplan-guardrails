@@ -53,8 +53,8 @@ Três coisas que esta rodada mostrou e que valem mais que as médias.
 **O que quebra é tamanho, não ambiguidade.** As categorias `ambigua` e
 `contraditoria` convergiram 4 de 4 cada uma. A categoria `grande` convergiu 1 de
 4. Pedidos vagos o modelo resolve decidindo por conta própria; casas com muitos
-cômodos ele não consegue encaixar sem sobrepor paredes ou desalinhar portas.
-Se houver um limite prático a documentar para o aluno, é o número de cômodos.
+cômodos ele não consegue encaixar sem sobrepor paredes ou desalinhar portas. Se
+houver um limite prático a documentar para o aluno, é o número de cômodos.
 
 **As descrições contraditórias não testam o que pareciam testar.** Todas as
 quatro foram aprovadas. O validador confere a planta, não se a planta atende ao
@@ -74,8 +74,8 @@ números não mudarem, a regra de ventilação não tem vida própria.
 
 Uma execução por descrição, sem repetição: o modelo é não determinístico, então
 cada número aqui tem uma margem que esta rodada não mede. As tendências fortes
-— `grande` contra `simples`, iluminação contra o resto — são grandes demais para
-serem ruído; a média de iterações, não.
+de `grande` contra `simples` e de iluminação contra o resto, são grandes demais
+para serem ruído; a média de iterações, não.
 
 O custo não foi calculado: o preço do deployment não foi informado ao script, e
 um número inventado seria pior do que nenhum.
