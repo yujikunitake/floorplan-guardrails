@@ -2,7 +2,8 @@
 
 O arquivo de regras é o único lugar onde moram os valores normativos. O
 gerador nunca os vê: ele aprende o que é exigido apenas pelo relatório de
-violações. Ver o princípio 2 do CLAUDE.md.
+violações. É o princípio que sustenta a oficina: se o prompt trouxesse os
+números, a primeira planta sairia aprovada e não haveria o que mostrar.
 
 Por que validar o arquivo
 -------------------------
