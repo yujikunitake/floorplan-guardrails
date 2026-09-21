@@ -304,3 +304,62 @@ def test_every_rule_runs_even_on_a_hopeless_plan() -> None:
         "min_area",
         "min_dimension",
     } <= found
+
+
+# --- piso de habitabilidade ------------------------------------------------
+
+
+def test_a_house_without_a_bathroom_is_refused() -> None:
+    """A regra que fecha a rota de fuga do modelo.
+
+    Diante de um pedido impossível, o modelo pode encolher o programa até
+    sobrar um cômodo só, que satisfaz todas as regras geométricas. Numa
+    avaliação real, "seis quartos, três banheiros, sala e cozinha em seis por
+    seis metros" terminou aprovado como um único ambiente de 36 m².
+    """
+    data = plan_data()
+    room(data, "r4")["type"] = "bedroom"
+
+    assert "has_bathroom" in broken_rules(data)
+
+
+def test_the_bathroom_rule_does_not_care_how_many() -> None:
+    assert "has_bathroom" not in broken_rules(plan_data())
+
+
+def test_a_single_room_house_is_refused() -> None:
+    """O caso exato observado na avaliação."""
+    data = {
+        "rooms": [
+            {
+                "id": "r1",
+                "type": "living_room",
+                "name": "Ambiente único",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 6.0,
+                "depth": 6.0,
+            }
+        ],
+        "windows": [
+            {
+                "room_id": "r1",
+                "wall": "north",
+                "offset": 0.5,
+                "width": 5.0,
+                "height": 1.2,
+            }
+        ],
+        "doors": [
+            {
+                "room_id": "r1",
+                "wall": "west",
+                "offset": 0.5,
+                "width": 0.9,
+                "to": "exterior",
+            }
+        ],
+        "design_notes": "Um ambiente só.",
+    }
+
+    assert broken_rules(data) == {"has_bathroom"}

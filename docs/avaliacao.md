@@ -8,6 +8,14 @@
 
 Os valores normativos em uso são provisórios; ver o README.
 
+## Nota posterior
+
+Esta rodada foi feita com quatorze regras. Depois dela acrescentou-se a décima
+quinta, `has_bathroom`, que exige ao menos um banheiro na casa. Ela foi motivada
+justamente pelo que se lê abaixo: a descrição contraditória terminou aprovada
+como um único ambiente, e isso deixou de ser aceitável. Os números aqui não
+foram refeitos.
+
 ## Resumo
 
 | Métrica | Valor |
