@@ -80,7 +80,7 @@ def test_the_shipped_rules_file_loads() -> None:
     """Guarda o arquivo de produção contra erro de digitação.
 
     Confere só que ele carrega. Os números ficam de fora de propósito: eles
-    mudam quando a Etapa 1 confirmar as fontes, e a suíte não pode quebrar
+    mudam quando as fontes forem confirmadas, e a suíte não pode quebrar
     por isso.
     """
     assert load_rules(REPO_ROOT / DEFAULT_RULES_PATH).rules
