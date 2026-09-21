@@ -12,7 +12,7 @@ Closes #
 
 ## Checklist
 
-- [ ] PR title follows Conventional Commits with an allowed scope (see CLAUDE.md)
+- [ ] PR title follows Conventional Commits with an allowed scope
 - [ ] `uv run ruff check` passes
 - [ ] `uv run ruff format --check` passes
 - [ ] `uv run pytest` passes

@@ -8,7 +8,7 @@ license = "MIT"
 # As dependências de runtime entram junto com o código que as usa
 # (matplotlib na Fase 2, o agente na Fase 3).
 dependencies = [
-    "agent-framework==1.19.0",
+    "agent-framework-openai==1.14.4",
     "matplotlib>=3.9",
     "pydantic>=2.9",
     "pyyaml>=6.0",
@@ -33,7 +33,7 @@ packages = ["src/floorplan_guardrails"]
 
 [tool.ruff]
 target-version = "py312"
-# O CLAUDE.md exige lint e formatação também nos notebooks da oficina.
+# Lint e formatação valem também para os notebooks da oficina.
 extend-include = ["*.ipynb"]
 
 [tool.ruff.lint]
