@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.0](https://github.com/yujikunitake/floorplan-guardrails/compare/v1.0.0...v1.1.0) (2026-09-21)
+
+
+### Features
+
+* **validator:** require at least one bathroom ([#12](https://github.com/yujikunitake/floorplan-guardrails/issues/12)) ([99bcf65](https://github.com/yujikunitake/floorplan-guardrails/commit/99bcf6540ccd9d249d8b76d804871b0ad71df6c7))
+
 ## 1.0.0 (2026-09-21)
 
 
