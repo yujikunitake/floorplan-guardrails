@@ -81,9 +81,10 @@ cerca de dez cômodos. Fora do escopo: mais de um pavimento, estrutura, escadas,
 mobiliário, orientação solar, recuos do lote e desenho técnico executivo.
 
 Os valores normativos são **provisórios**: cada regra traz `source: "PROVISÓRIO:
-a confirmar na Etapa 1"` e ainda não foi conferida contra o código de obras. O
-cálculo de ventilação é uma **simplificação**: área da janela multiplicada por
-um fator de abertura configurável, 0,50 por padrão.
+a confirmar contra o código de obras de Curitiba"`, e nenhum número foi
+conferido ainda na legislação. O cálculo de ventilação é uma **simplificação**:
+área da janela multiplicada por um fator de abertura configurável, 0,50 por
+padrão.
 
 Material didático. **Não substitui projeto de profissional habilitado.**
 

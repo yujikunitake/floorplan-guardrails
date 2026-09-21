@@ -236,8 +236,8 @@ def test_lighting_and_ventilation_coincide_with_the_shipped_values() -> None:
     exigida, as duas contas dão exatamente a mesma condição sobre a área de
     janela. Com os valores de hoje a ventilação nunca reprova sozinha: ela é
     uma alavanca do nível 3, que só ganha vida quando o aluno mexe no fator
-    de abertura. Se a Etapa 1 mudar um dos dois números, este teste falha e
-    o achado deixa de valer.
+    de abertura. Se a confirmação das fontes mudar um dos dois números, este
+    teste falha e o achado deixa de valer.
     """
     data = plan_data()
     window = next(w for w in data["windows"] if w["room_id"] == "r3")

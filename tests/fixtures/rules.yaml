@@ -2,9 +2,10 @@
 # Regras de teste
 # ---------------------------------------------------------------------------
 # Cópia própria da suíte, deliberadamente separada de `config/rules.yaml`.
-# Quando os valores provisórios forem trocados pelos definitivos da Etapa 1,
-# o arquivo de produção muda e este não: os testes continuam valendo, porque
-# testam o comportamento do validador, não os números do código de obras.
+# Quando os valores provisórios forem trocados pelos confirmados no código de
+# obras de Curitiba, o arquivo de produção muda e este não: os testes
+# continuam valendo, porque testam o comportamento do validador, não os
+# números do código de obras.
 #
 # Não edite este arquivo para experimentar. Para isso existe o nível 3, que
 # mexe em `config/rules.yaml`.
@@ -19,7 +20,7 @@ rules:
   min_area:
     description: "Área mínima do piso do cômodo."
     unit: "m²"
-    source: "PROVISÓRIO: a confirmar na Etapa 1"
+    source: "PROVISÓRIO: a confirmar contra o código de obras de Curitiba"
     values:
       living_room: 8.0
       bedroom: 8.0
@@ -32,7 +33,7 @@ rules:
   min_dimension:
     description: "Menor dimensão do cômodo. Num corredor, é a largura da circulação."
     unit: "m"
-    source: "PROVISÓRIO: a confirmar na Etapa 1"
+    source: "PROVISÓRIO: a confirmar contra o código de obras de Curitiba"
     values:
       living_room: 2.40
       bedroom: 2.40
@@ -45,7 +46,7 @@ rules:
   lighting_divisor:
     description: "A área de janela exigida é a área do piso dividida por este número."
     unit: "divisor da área do piso"
-    source: "PROVISÓRIO: a confirmar na Etapa 1"
+    source: "PROVISÓRIO: a confirmar contra o código de obras de Curitiba"
     values:
       living_room: 6.0
       bedroom: 6.0
@@ -58,7 +59,7 @@ rules:
   ventilation_divisor:
     description: "A área de ventilação exigida é a área de janela exigida dividida por este número."
     unit: "divisor da área de janela exigida"
-    source: "PROVISÓRIO: a confirmar na Etapa 1"
+    source: "PROVISÓRIO: a confirmar contra o código de obras de Curitiba"
     values:
       living_room: 2.0
       bedroom: 2.0

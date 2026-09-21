@@ -54,8 +54,8 @@ def test_instructions_carry_no_normative_value() -> None:
     planta já sairia aprovada e a oficina perderia o que tem para mostrar:
     a reprovação. O modelo só descobre as regras pelo relatório.
 
-    O teste vale para quaisquer valores, então continua de pé quando a
-    Etapa 1 trocar os provisórios pelos definitivos.
+    O teste vale para quaisquer valores, então continua de pé quando os
+    provisórios forem trocados pelos confirmados no código de obras.
     """
     rules = load_rules(REPO_ROOT / DEFAULT_RULES_PATH)
 
