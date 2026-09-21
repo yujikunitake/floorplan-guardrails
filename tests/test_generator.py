@@ -84,30 +84,83 @@ def test_instructions_say_how_to_answer_a_violation_report() -> None:
 # --- endpoint --------------------------------------------------------------
 
 
+OPENAI = "https://recurso.openai.azure.com/openai/v1/"
+SERVICES = "https://recurso.services.ai.azure.com/openai/v1/"
+COGNITIVE = "https://recurso.cognitiveservices.azure.com/openai/v1/"
+
+
 @pytest.mark.parametrize(
-    ("configured", "expected"),
+    ("pasted", "expected"),
     [
+        # Chaves e Ponto de Extremidade, no portal do Azure.
+        ("https://recurso.openai.azure.com/", OPENAI),
+        ("https://recurso.cognitiveservices.azure.com/", COGNITIVE),
+        ("https://recurso.services.ai.azure.com/", SERVICES),
+        # Visão geral do projeto, no portal do Foundry.
+        ("https://recurso.services.ai.azure.com/api/projects/P", SERVICES),
+        # URI de destino do deployment, com versão da API e tudo.
         (
-            "https://recurso.openai.azure.com/",
-            "https://recurso.openai.azure.com/openai/v1/",
+            "https://recurso.openai.azure.com/openai/deployments/gpt-5-mini/"
+            "chat/completions?api-version=2025-01-01-preview",
+            OPENAI,
         ),
-        (
-            "https://recurso.services.ai.azure.com/api/projects/P",
-            "https://recurso.services.ai.azure.com/api/projects/P/openai/v1/",
-        ),
-        (
-            "  https://recurso.openai.azure.com/openai/v1  ",
-            "https://recurso.openai.azure.com/openai/v1/",
-        ),
+        # Exemplos de código da rota v1, com e sem a operação no fim.
+        ("https://recurso.openai.azure.com/openai/v1/", OPENAI),
+        ("https://recurso.openai.azure.com/openai/v1/responses", OPENAI),
+        ("https://recurso.openai.azure.com/openai/v1/chat/completions", OPENAI),
+        ("https://recurso.services.ai.azure.com/openai", SERVICES),
+        # Endpoint de inferência de modelos.
+        ("https://recurso.services.ai.azure.com/models", SERVICES),
+        # Descuidos de colagem.
+        ("  https://recurso.openai.azure.com/openai/v1  ", OPENAI),
+        ("recurso.openai.azure.com", OPENAI),
+        ("HTTPS://Recurso.OpenAI.Azure.com", OPENAI),
     ],
 )
-def test_base_url_is_built_for_the_openai_path(configured: str, expected: str) -> None:
-    """O caminho /openai/v1 é o que aceita chave num endpoint de projeto.
+def test_any_url_the_portal_shows_becomes_the_v1_base(
+    pasted: str, expected: str
+) -> None:
+    """O portal mostra várias URLs para o mesmo recurso; todas levam à mesma base.
 
-    E é também o que recusa api-version, motivo de a versão da API não
-    aparecer em lugar nenhum deste módulo.
+    A rota /openai/v1 no host é a que aceita chave, e é também a que recusa
+    api-version, motivo de a versão da API não aparecer em lugar nenhum deste
+    módulo, nem mesmo quando o aluno cola uma URL que a traz.
     """
-    assert openai_base_url(configured) == expected
+    assert openai_base_url(pasted) == expected
+
+
+def test_the_base_url_is_stable_when_normalized_twice() -> None:
+    """O notebook guarda a URL já normalizada, e o gerador normaliza de novo."""
+    assert openai_base_url(openai_base_url("recurso.openai.azure.com")) == OPENAI
+
+
+@pytest.mark.parametrize(
+    "pasted",
+    [
+        "",
+        "   ",
+        "http://recurso.openai.azure.com/",
+        "https://portal.azure.com/#@tenant/resource/subscriptions/x/overview",
+        "https://ai.azure.com/build/overview?wsid=/subscriptions/x",
+        "https://api.openai.com/v1",
+        "https://openai.azure.com/",
+        "https://recurso.openai.azure.com.exemplo.com/",
+        "sk-minha-chave-colada-no-lugar-errado",
+    ],
+)
+def test_an_unrecognized_url_says_what_to_copy(pasted: str) -> None:
+    """A mensagem cabe numa frase e diz qual URL copiar e onde achá-la."""
+    with pytest.raises(GeneratorError) as erro:
+        openai_base_url(pasted)
+
+    message = str(erro.value)
+    assert message.count(". ") == 0
+    # O que foi colado pode ser a chave, e não pode aparecer na tela.
+    assert not pasted.strip() or pasted.strip() not in message
+    assert "Chaves e Ponto de Extremidade" in message
+    assert "portal do Azure" in message
+    # O exemplo de URL é a última palavra da frase, antes do ponto final.
+    assert message.split()[-1] == "https://seu-recurso.openai.azure.com/."
 
 
 # --- a mensagem enviada ----------------------------------------------------

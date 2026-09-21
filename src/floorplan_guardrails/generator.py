@@ -24,10 +24,12 @@ Conexão
 Autenticação por chave, nunca Entra ID: exigir Azure CLI no ambiente do aluno
 seria mais um jeito de a oficina falhar antes de começar.
 
-O endpoint vai para `base_url` com `/openai/v1/` no fim, e **sem**
-`api-version`. Esse caminho recusa o parâmetro com HTTP 400. Vale tanto para
-o endpoint de um recurso Azure OpenAI quanto para o de um projeto do Azure AI
-Foundry, que é o que torna a chave suficiente nos dois casos.
+O endpoint vai para `base_url` como `https://<host>/openai/v1/`, e **sem**
+`api-version`. Esse caminho recusa o parâmetro com HTTP 400. A rota fica no
+host, e não no caminho, e isso vale para os três domínios em que o portal
+mostra o recurso: `openai.azure.com`, `cognitiveservices.azure.com` e
+`services.ai.azure.com`. Por isso qualquer URL que o aluno copie do portal,
+com ou sem caminho, se reduz à mesma base.
 """
 
 import json
@@ -36,6 +38,7 @@ import time
 from collections.abc import Sequence
 from dataclasses import dataclass
 from typing import Protocol
+from urllib.parse import urlsplit
 
 from agent_framework import Agent
 from agent_framework.openai import OpenAIChatClient, OpenAIChatOptions
@@ -54,6 +57,13 @@ DEFAULT_REASONING_EFFORT = "low"
 
 #: O sufixo que transforma um endpoint em URL compatível com a API da OpenAI.
 OPENAI_PATH = "/openai/v1/"
+
+#: Os domínios em que um recurso Azure OpenAI ou Foundry atende a rota v1.
+AZURE_HOSTS = (
+    ".openai.azure.com",
+    ".cognitiveservices.azure.com",
+    ".services.ai.azure.com",
+)
 
 
 class GeneratorError(Exception):
@@ -88,13 +98,34 @@ class Generator(Protocol):
 
 
 def openai_base_url(endpoint: str) -> str:
-    """Transforma o endpoint configurado na URL que o cliente usa."""
-    trimmed = endpoint.strip().rstrip("/")
+    """Transforma qualquer URL do recurso na URL que o cliente usa.
 
-    if trimmed.endswith("/openai/v1"):
-        return trimmed + "/"
+    O portal mostra várias URLs para o mesmo recurso, e o aluno cola a que
+    estiver na frente: o endpoint da página de chaves, o do projeto Foundry, a
+    URI de destino do deployment com `api-version` no fim. Todas têm o mesmo
+    host, e é só dele que precisamos: o caminho e a query são descartados, e o
+    que volta é sempre `https://<host>/openai/v1/`.
+    """
+    text = endpoint.strip()
 
-    return trimmed + OPENAI_PATH
+    # Colar sem o esquema é comum; sem ele o parser lê o host como caminho.
+    if "://" not in text:
+        text = "https://" + text
+
+    parts = urlsplit(text)
+    host = (parts.hostname or "").lower()
+
+    if parts.scheme != "https" or not host.endswith(AZURE_HOSTS):
+        # O texto colado não é repetido na mensagem: às vezes é a chave, colada
+        # no campo errado, e ela iria parar na tela do projetor.
+        raise GeneratorError(
+            "Não reconheci esse endereço: copie o campo "
+            "Ponto de extremidade da página Chaves e Ponto de Extremidade do "
+            "seu recurso Azure OpenAI, no portal do Azure, algo como "
+            "https://seu-recurso.openai.azure.com/."
+        )
+
+    return f"https://{host}{OPENAI_PATH}"
 
 
 def build_prompt(
