@@ -617,6 +617,25 @@ def check_ventilation(plan: FloorPlan, rules: Ruleset) -> list[Violation]:
 
 # --- entrada pública -------------------------------------------------------
 
+#: As regras de integridade: a planta fecha como desenho?
+INTEGRITY_RULES = frozenset(
+    {
+        "unique_ids",
+        "positive_dimensions",
+        "known_references",
+        "no_overlap",
+        "opening_fits_wall",
+        "window_on_exterior_wall",
+        "door_placement",
+    }
+)
+
+#: As regras funcionais: dá para morar nela?
+FUNCTIONAL_RULES = frozenset({"room_has_door", "has_exterior_door", "rooms_reachable"})
+
+#: As regras normativas, as únicas cujos valores vêm de `config/rules.yaml`.
+NORMATIVE_RULES = frozenset({"min_area", "min_dimension", "lighting", "ventilation"})
+
 CHECKS = (
     check_unique_ids,
     check_positive_dimensions,

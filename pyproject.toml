@@ -52,3 +52,6 @@ select = [
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
+# A raiz entra no caminho para que os testes alcancem `eval/`, que fica fora
+# do pacote por ser ferramenta do autor e não do aluno.
+pythonpath = ["."]
