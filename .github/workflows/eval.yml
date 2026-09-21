@@ -15,15 +15,14 @@ jobs:
       - uses: actions/checkout@v7
       - uses: astral-sh/setup-uv@v10.1.0
       - run: uv sync --frozen
+      # AZURE_OPENAI_API_VERSION não entra aqui de propósito: o caminho
+      # /openai/v1 recusa o parâmetro api-version, e o cliente lê essa
+      # variável do ambiente sozinho. Definida, ainda que vazia, ela quebra
+      # todas as chamadas.
       - name: Run the evaluation suite
         env:
           AZURE_OPENAI_ENDPOINT: ${{ secrets.AZURE_OPENAI_ENDPOINT }}
           AZURE_OPENAI_API_KEY: ${{ secrets.AZURE_OPENAI_API_KEY }}
           AZURE_OPENAI_DEPLOYMENT: ${{ secrets.AZURE_OPENAI_DEPLOYMENT }}
-          AZURE_OPENAI_API_VERSION: ${{ secrets.AZURE_OPENAI_API_VERSION }}
         run: |
-          if [ ! -d eval ]; then
-            echo "The evaluation suite arrives in Phase 5."
-            exit 0
-          fi
           uv run python -m eval.run

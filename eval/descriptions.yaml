@@ -1,0 +1,99 @@
+# Descrições usadas na avaliação.
+#
+# As categorias existem para separar o que o relatório mede: uma casa simples
+# que não converge é um problema diferente de uma descrição contraditória que
+# não converge.
+#
+#   simples        poucos cômodos, pedido direto
+#   media          casa completa, pedido comum
+#   grande         muitos cômodos, onde a geometria fica difícil
+#   ambigua        falta informação, o modelo precisa decidir
+#   contraditoria  o pedido não fecha, e o interessante é ver como ele sai
+#
+# O texto vai entre aspas: descrição em português leva dois-pontos, e isso
+# quebra o YAML sem aspas.
+
+descriptions:
+  - id: simples-01
+    category: simples
+    text: "Uma casa com uma sala, uma cozinha e um quarto."
+
+  - id: simples-02
+    category: simples
+    text: "Uma quitinete com um cômodo único que serve de sala e quarto, mais um banheiro."
+
+  - id: simples-03
+    category: simples
+    text: "Uma casa pequena para uma pessoa, com quarto, banheiro e uma cozinha aberta para a sala."
+
+  - id: simples-04
+    category: simples
+    text: "Uma casa de dois cômodos e um banheiro, com a entrada pela sala."
+
+  - id: media-01
+    category: media
+    text: "Uma casa para um casal com dois filhos: sala, cozinha, três quartos e dois banheiros."
+
+  - id: media-02
+    category: media
+    text: "Uma casa térrea com sala, cozinha, área de serviço, dois quartos e um banheiro, com um corredor ligando os quartos."
+
+  - id: media-03
+    category: media
+    text: "Uma casa com sala ampla, cozinha separada, dois quartos sendo um suíte, e um banheiro social."
+
+  - id: media-04
+    category: media
+    text: "Uma casa com entrada pela sala, cozinha nos fundos com área de serviço ao lado, dois quartos e um banheiro."
+
+  - id: media-05
+    category: media
+    text: "Uma casa onde todos os quartos recebem sol da manhã, com sala, cozinha e um banheiro."
+
+  - id: grande-01
+    category: grande
+    text: "Uma casa com quatro quartos, três banheiros, sala, cozinha, área de serviço e um corredor central."
+
+  - id: grande-02
+    category: grande
+    text: "Uma casa grande para uma família de seis pessoas, com cinco quartos, dois banheiros, sala, cozinha e área de serviço."
+
+  - id: grande-03
+    category: grande
+    text: "Uma casa em formato de L, com a sala e a cozinha numa ala e três quartos e dois banheiros na outra."
+
+  - id: grande-04
+    category: grande
+    text: "Uma casa com sala, sala de jantar, cozinha, área de serviço, quatro quartos e dois banheiros."
+
+  - id: ambigua-01
+    category: ambigua
+    text: "Uma casa confortável."
+
+  - id: ambigua-02
+    category: ambigua
+    text: "Quero uma casa para a minha família."
+
+  - id: ambigua-03
+    category: ambigua
+    text: "Uma casa com alguns quartos e o resto do que for preciso."
+
+  - id: ambigua-04
+    category: ambigua
+    text: "Uma casa moderna e bem iluminada."
+
+  - id: contraditoria-01
+    category: contraditoria
+    text: "Uma casa com seis quartos, três banheiros, sala e cozinha, tudo dentro de seis metros por seis."
+
+  - id: contraditoria-02
+    category: contraditoria
+    text: "Uma casa com quatro quartos em que nenhum cômodo tem janela para fora."
+
+  - id: contraditoria-03
+    category: contraditoria
+    text: "Uma casa em que a cozinha não se conecta a nenhum outro cômodo e mesmo assim dá para chegar nela."
+
+  - id: contraditoria-04
+    category: contraditoria
+    text: "Uma casa com dois quartos que ocupem exatamente o mesmo lugar no terreno."
