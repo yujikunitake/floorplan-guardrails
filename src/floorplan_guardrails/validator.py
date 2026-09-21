@@ -439,6 +439,37 @@ def check_exterior_door(plan: FloorPlan) -> list[Violation]:
     ]
 
 
+def check_has_bathroom(plan: FloorPlan) -> list[Violation]:
+    """Toda casa precisa de ao menos um banheiro.
+
+    Parece óbvio a ponto de não merecer regra, e é justamente por isso que
+    precisa de uma. Sem ela, diante de um pedido impossível o modelo tem uma
+    saída: encolher o programa até sobrar um cômodo só, que fecha em todas as
+    outras regras. Foi o que aconteceu numa avaliação real, em que "seis
+    quartos, três banheiros, sala e cozinha em seis por seis metros" terminou
+    aprovado como um único ambiente de 36 m².
+
+    Esta regra estabelece um piso de habitabilidade: o que o verificador
+    aceita chamar de casa.
+    """
+    if any(room.type == "bathroom" for room in plan.rooms):
+        return []
+
+    return [
+        Violation(
+            rule_id="has_bathroom",
+            room_ids=[],
+            measured=0.0,
+            required=1.0,
+            unit="banheiros",
+            message=(
+                "A casa não tem nenhum banheiro. Uma moradia precisa de ao "
+                "menos um, mesmo que a descrição não o mencione."
+            ),
+        )
+    ]
+
+
 def check_reachability(plan: FloorPlan) -> list[Violation]:
     """Percorre o grafo de portas a partir da rua e vê quem ficou de fora."""
     graph = door_neighbours(plan)
@@ -631,7 +662,9 @@ INTEGRITY_RULES = frozenset(
 )
 
 #: As regras funcionais: dá para morar nela?
-FUNCTIONAL_RULES = frozenset({"room_has_door", "has_exterior_door", "rooms_reachable"})
+FUNCTIONAL_RULES = frozenset(
+    {"room_has_door", "has_exterior_door", "rooms_reachable", "has_bathroom"}
+)
 
 #: As regras normativas, as únicas cujos valores vêm de `config/rules.yaml`.
 NORMATIVE_RULES = frozenset({"min_area", "min_dimension", "lighting", "ventilation"})
@@ -647,6 +680,7 @@ CHECKS = (
     check_rooms_have_doors,
     check_exterior_door,
     check_reachability,
+    check_has_bathroom,
 )
 
 NORMATIVE_CHECKS = (

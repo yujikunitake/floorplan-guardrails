@@ -52,7 +52,7 @@ Essa convenção é toda a linguagem comum entre o modelo e o verificador.
 
 ## O que o verificador mede
 
-Catorze regras, em três grupos.
+Quinze regras, em três grupos.
 
 As de **integridade** perguntam se a planta fecha como desenho: dimensões
 positivas, identificadores únicos, referências existentes, ausência de
@@ -124,7 +124,7 @@ deixou de coincidir com o trecho compartilhado.
 
 **Corrigir uma coisa quebra outra.** É por isso que o laço pede a planta inteira
 de volta a cada iteração, e não um remendo: mexer num cômodo desloca os
-vizinhos. E é por isso que todas as catorze regras são executadas de novo a cada
+vizinhos. E é por isso que todas as quinze regras são executadas de novo a cada
 volta, e não apenas as que falharam.
 
 **O relatório é a interface.** O modelo nunca recebeu os números das regras. Ele
@@ -134,11 +134,21 @@ por dois públicos: quem corrige e quem aprende. É essa redação que faz a
 correção acontecer.
 
 **O verificador mede apenas o que lhe ensinaram a medir.** Não existe regra sobre
-o terreno, nem sobre fidelidade ao pedido. Uma planta que ignorasse metade da
-descrição e fechasse em todas as catorze regras seria aprovada sem hesitação.
-Numa avaliação com 21 descrições, as quatro deliberadamente contraditórias foram
-todas aprovadas não porque o modelo resolveu a contradição, mas porque nada nas
-regras pergunta se a resposta corresponde à pergunta.
+fidelidade ao pedido, e essa lacuna tem consequência prática. Numa avaliação com
+21 descrições, pediu-se "seis quartos, três banheiros, sala e cozinha, tudo
+dentro de seis metros por seis". O programa não cabe: seriam onze ambientes em
+36 m². O modelo tentou e recebeu 27 violações; na tentativa seguinte devolveu uma
+planta sem nenhum cômodo; por fim entregou um único ambiente de 36 m², que foi
+aprovado.
+
+Ele não resolveu a contradição. Encolheu o programa até que o que restava
+satisfizesse as regras, porque nenhuma delas perguntava se a resposta
+correspondia à pergunta.
+
+A regra de banheiro obrigatório fecha o caso mais grosseiro dessa fuga: uma casa
+de um cômodo só deixou de ser aceitável. Mas ela levanta o piso, não elimina o
+problema. Um verificador que examina apenas a planta jamais saberá quantos
+quartos foram pedidos.
 
 Esse é o limite honesto do método, e vale mais do que qualquer de suas virtudes:
 **a verificação é tão boa quanto a especificação.** O que não estiver nas regras
