@@ -39,6 +39,11 @@ e lê o relatório de violações, que é o que interessa. No terceiro, altera u
 em `config/rules.yaml` e repete a execução, constatando que quem define o
 aceitável é o arquivo de regras, não o modelo.
 
+O conteúdo está escrito em [`docs/oficina.md`](docs/oficina.md), que serve tanto
+de revisão a quem participou quanto de leitura autônoma a quem não participou:
+percorre o problema, as convenções de desenho, as catorze regras e um caso real
+do começo ao fim, incluindo o que ele revela sobre os limites do método.
+
 ## Como funciona
 
 ```mermaid
