@@ -8,6 +8,7 @@ license = "MIT"
 # As dependências de runtime entram junto com o código que as usa
 # (matplotlib na Fase 2, o agente na Fase 3).
 dependencies = [
+    "agent-framework==1.19.0",
     "matplotlib>=3.9",
     "pydantic>=2.9",
     "pyyaml>=6.0",
@@ -39,6 +40,11 @@ select = [
     "UP",  # pyupgrade
     "B",   # flake8-bugbear
 ]
+
+[tool.ruff.lint.per-file-ignores]
+# O prompt é prosa: quebrar as frases em 88 colunas pioraria o texto que o
+# autor edita e que o modelo lê.
+"src/floorplan_guardrails/prompt.py" = ["E501"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
