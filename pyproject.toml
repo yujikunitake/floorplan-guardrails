@@ -16,6 +16,10 @@ dependencies = [
 
 [dependency-groups]
 dev = [
+    # O kernel que o notebook da oficina usa. Sem ele o VS Code abre o
+    # notebook e não tem em que rodá-lo, o que obrigaria o aluno a escolher
+    # kernel na mão — justamente o que o plano proíbe.
+    "ipykernel>=6.29",
     "pytest>=8.3",
     "ruff>=0.6",
 ]
