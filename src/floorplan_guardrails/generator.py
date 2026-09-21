@@ -140,7 +140,7 @@ class AzureGenerator:
         self.deployment = deployment
         self.reasoning_effort = reasoning_effort
 
-        client = OpenAIChatClient(
+        self._client = OpenAIChatClient(
             api_key=api_key,
             base_url=openai_base_url(endpoint),
             model=deployment,
@@ -148,12 +148,37 @@ class AzureGenerator:
         self._agent = Agent(
             name="arquiteto",
             instructions=INSTRUCTIONS,
-            client=client,
+            client=self._client,
             default_options=OpenAIChatOptions(
                 response_format=FloorPlan,
                 reasoning={"effort": reasoning_effort},
             ),
         )
+
+    async def check(self) -> str:
+        """Confirma que a conexão funciona, com a chamada mais barata possível.
+
+        Sem formato estruturado e sem raciocínio: o que se quer saber aqui é
+        se endpoint, chave e deployment estão certos, não se o modelo projeta
+        bem. Na célula de configuração do notebook, uma resposta qualquer já
+        prova que o caminho está aberto.
+        """
+        probe = Agent(
+            name="teste",
+            instructions="Responda em uma palavra.",
+            client=self._client,
+        )
+
+        try:
+            reply = await probe.run("Diga: pronto")
+        except Exception as exc:
+            raise GeneratorError(
+                "Não consegui falar com o modelo. Confira o endpoint, a chave "
+                "e o nome do deployment.\n\n"
+                f"{type(exc).__name__}: {exc}"
+            ) from exc
+
+        return reply.text.strip()
 
     async def propose(
         self,
