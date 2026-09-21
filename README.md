@@ -1,11 +1,10 @@
 # floorplan-guardrails
 
 A language model proposes the floor plan of a house from a description written in
-plain Portuguese. A deterministic validator — plain Python, no geometry or graph
-library — measures that proposal against design rules and writes a report of
-everything that is wrong. The report goes back to the model, which redraws the
-whole plan, and the cycle repeats until it passes or the iteration budget runs
-out. The thesis is the separation: **generate with a model, verify with code.**
+plain Portuguese. A deterministic validator measures that proposal against design
+rules and reports what is wrong. The report goes back to the model, which redraws
+the plan, until it passes. The thesis is the separation: **generate with a model,
+verify with code.**
 
 [![lint](https://github.com/yujikunitake/floorplan-guardrails/actions/workflows/lint.yml/badge.svg)](https://github.com/yujikunitake/floorplan-guardrails/actions/workflows/lint.yml)
 [![test](https://github.com/yujikunitake/floorplan-guardrails/actions/workflows/test.yml/badge.svg)](https://github.com/yujikunitake/floorplan-guardrails/actions/workflows/test.yml)
@@ -14,22 +13,36 @@ out. The thesis is the separation: **generate with a model, verify with code.**
 
 [![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/yujikunitake/floorplan-guardrails)
 
+## Propósito
+
+Modelos de linguagem produzem respostas plausíveis, e plausível não é correto.
+Quando a correção pode ser definida em código, ela não precisa ser aceita por
+confiança: pode ser medida, e a medição pode voltar ao modelo como instrução.
+
+A oficina demonstra esse argumento num caso em que a correção é inequívoca. Uma
+planta ou tem cômodos sobrepostos, ou não tem; uma janela ou está sobre parede
+externa, ou não está. Ao final, espera-se que o participante saiba distinguir o
+que convém delegar a um modelo do que convém especificar em código, e reconheça
+esse desenho — gerar, verificar, devolver a verificação — como padrão aplicável
+muito além de plantas baixas.
+
 ## A oficina
 
-Material de uma oficina presencial de duas horas, projeto de extensão da PUCPR
-realizado na Estácio, em setembro de 2026. O botão acima é o passo 1: ele abre o
-ambiente pronto no navegador, sem instalar nada.
+Projeto de extensão da PUCPR realizado na Estácio, em setembro de 2026, em
+encontro presencial de duas horas. O botão acima abre o ambiente no navegador;
+não há instalação.
 
-A oficina tem três níveis, todos no mesmo notebook:
+São três níveis, no mesmo notebook. No primeiro, o participante descreve uma casa
+em português e observa o laço operar. No segundo, usa descrições preparadas para
+falhar — um quarto pequeno demais, um banheiro sem janela, um cômodo sem porta —
+e lê o relatório de violações, que é o que interessa. No terceiro, altera um valor
+em `config/rules.yaml` e repete a execução, constatando que quem define o
+aceitável é o arquivo de regras, não o modelo.
 
-1. **Descrever uma casa** em português e ver o laço trabalhar — o modelo propõe,
-   o validador mede, o relatório volta, a planta é redesenhada.
-2. **Provocar a reprovação** de propósito, com descrições prontas: um quarto
-   minúsculo, um banheiro sem janela, um cômodo sem porta, uma casa grande demais
-   para o terreno. O objetivo aqui não é a planta final, é ler o relatório.
-3. **Mudar as regras.** Editar um número em `config/rules.yaml` e rodar a mesma
-   descrição contra um verificador mais exigente. Quem decide o que é aceitável é
-   o arquivo, não o modelo.
+O conteúdo está escrito em [`docs/oficina.md`](docs/oficina.md), que serve tanto
+de revisão a quem participou quanto de leitura autônoma a quem não participou:
+percorre o problema, as convenções de desenho, as catorze regras e um caso real
+do começo ao fim, incluindo o que ele revela sobre os limites do método.
 
 ## Como funciona
 
@@ -47,65 +60,34 @@ flowchart LR
     V --> L[Registro JSONL]
 ```
 
-Uma peça generativa e quatro determinísticas. O laço fica em Python comum, fora
-do framework de agentes, de propósito: é controle determinístico, e mantê-lo em
-código que qualquer um lê deixa visível onde termina a parte que adivinha e
-começa a parte que verifica.
+Uma peça generativa e quatro determinísticas. O laço permanece em Python comum,
+fora do framework de agentes, para que fique visível onde termina a parte que
+estima e começa a parte que verifica.
 
-**O gerador não conhece os valores das regras.** As instruções dizem como
-desenhar — onde fica a origem, como se chamam as paredes, o que faz uma planta
-ser coerente — mas nunca quanto mede um quarto mínimo nem quanta janela um cômodo
-precisa. O modelo só descobre isso lendo o relatório de violações. Isso é
-deliberado, é o que garante que a reprovação apareça na oficina, e há um teste que
-falha se qualquer valor de `config/rules.yaml` vazar para o prompt.
+O gerador desconhece os valores das regras: suas instruções tratam apenas de
+convenções de desenho, e a área mínima de um quarto jamais lhe é informada. Ele a
+descobre lendo o relatório. A restrição é deliberada — sem ela a primeira planta
+seria aprovada e não haveria o que demonstrar — e um teste falha caso qualquer
+valor de `config/rules.yaml` alcance o prompt.
+
+Em avaliação com 21 descrições, 17 convergiram em até quatro iterações e 14
+apresentaram geometria correta já na primeira tentativa; o que limita o modelo é o
+tamanho da casa, não a clareza do pedido ([relatório](docs/avaliacao.md)).
 
 ## Escopo e limites
 
-**Faz:** casa térrea, cômodos retangulares alinhados aos eixos, portas e janelas,
-até cerca de 10 cômodos.
+Casas térreas, cômodos retangulares alinhados aos eixos, portas e janelas, até
+cerca de dez cômodos. Fora do escopo: mais de um pavimento, estrutura, escadas,
+mobiliário, orientação solar, recuos do lote e desenho técnico executivo.
 
-**Não faz:** mais de um pavimento, estrutura, escadas, mobiliário, orientação
-solar, recuos do lote, desenho técnico executivo.
+Os valores normativos são **provisórios** — cada regra traz `source: "PROVISÓRIO:
+a confirmar na Etapa 1"` e ainda não foi conferida contra o código de obras. O
+cálculo de ventilação é uma **simplificação**: área da janela multiplicada por um
+fator de abertura configurável, 0,50 por padrão.
 
-Duas ressalvas importantes:
-
-- **Os valores normativos são provisórios.** Cada regra em `config/rules.yaml`
-  está marcada com `source: "PROVISÓRIO: a confirmar na Etapa 1"`. Eles têm a
-  ordem de grandeza certa e ainda não foram conferidos contra o código de obras.
-- **A ventilação é uma simplificação.** A área que ventila é a área da janela
-  multiplicada por um fator de abertura configurável, padrão 0,50, que
-  corresponde a uma janela de correr em que metade do vão abre. Não é assim que a
-  norma calcula.
-
-Esta é uma ferramenta didática. **Não substitui projeto de profissional
-habilitado.**
-
-## O que os números dizem
-
-Uma rodada de avaliação com 21 descrições, em cinco categorias, contra o
-deployment da oficina:
-
-| Métrica | Valor |
-|---|---|
-| Convergiram dentro de 4 iterações | 17/21 (81%) |
-| Geometria correta já na 1ª tentativa | 14/21 (67%) |
-| Iterações até aprovar (média) | 2,4 |
-| Tempo por execução (média) | 53 s |
-
-O que falha é o tamanho da casa, não a clareza do pedido: descrições vagas
-convergiram 4 de 4, e casas grandes, 1 de 4. As regras que mais reprovam são as
-de iluminação e ventilação — as únicas que o modelo não teria como adivinhar.
-
-O relatório completo, com a leitura dos números e as ressalvas, está em
-[`docs/avaliacao.md`](docs/avaliacao.md). Para gerar outro:
-
-```bash
-uv run python -m eval.run
-```
+Material didático. **Não substitui projeto de profissional habilitado.**
 
 ## Desenvolvimento
-
-Ambiente com [uv](https://docs.astral.sh/uv/):
 
 ```bash
 uv sync --frozen
@@ -113,25 +95,16 @@ uv run ruff check && uv run ruff format --check
 uv run pytest
 ```
 
-Nenhum teste chama o modelo. A camada determinística é testada com plantas feitas
-à mão — uma correta e uma por regra violada isoladamente, incluindo uma casa em L
-para exercitar a detecção de parede externa — e o laço roda contra um gerador
-simulado.
+Nenhum teste comunica-se com o modelo. A camada determinística é exercitada com
+plantas construídas manualmente — uma correta e uma por regra violada
+isoladamente, incluindo uma casa em L para a detecção de parede externa — e o laço
+roda contra um gerador simulado.
 
-Para falar com o Azure, copie `.env.example` para `.env` e preencha. Atenção:
-`AZURE_OPENAI_API_VERSION` **não deve ser definida** — o caminho `/openai/v1`
-recusa esse parâmetro.
+Para as chamadas ao Azure, copie `.env.example` para `.env`. A variável
+`AZURE_OPENAI_API_VERSION` **não deve ser definida**: o caminho `/openai/v1`
+recusa esse parâmetro. A avaliação roda com `uv run python -m eval.run`, e
+`--limit` permite conferir antes da rodada completa.
 
-A avaliação roda as descrições de `eval/descriptions.yaml` pelo laço. Use
-`--limit` para conferir antes de gastar a rodada inteira:
-
-```bash
-uv run python -m eval.run --limit 3
-```
-
-### Contribuindo
-
-Todo trabalho entra por pull request com squash merge; a `main` não aceita push
-direto. O título do PR vira o commit e segue Conventional Commits com uma lista
-fechada de escopos, verificada no CI. Antes de abrir: `ruff check`,
-`ruff format --check` e `pytest` passando.
+Toda alteração entra por pull request com squash merge; a `main` não aceita push
+direto. O título do pull request vira a mensagem do commit e segue Conventional
+Commits com lista fechada de escopos, verificada na integração contínua.
