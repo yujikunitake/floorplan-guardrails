@@ -159,7 +159,8 @@ def test_an_unrecognized_url_says_what_to_copy(pasted: str) -> None:
     assert not pasted.strip() or pasted.strip() not in message
     assert "Chaves e Ponto de Extremidade" in message
     assert "portal do Azure" in message
-    assert "https://seu-recurso.openai.azure.com/" in message
+    # O exemplo de URL é a última palavra da frase, antes do ponto final.
+    assert message.split()[-1] == "https://seu-recurso.openai.azure.com/."
 
 
 # --- a mensagem enviada ----------------------------------------------------
