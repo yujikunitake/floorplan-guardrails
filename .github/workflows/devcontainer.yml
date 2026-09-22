@@ -38,7 +38,7 @@ jobs:
           fi
       - name: Build the dev container
         if: steps.guard.outputs.present == 'true'
-        uses: devcontainers/ci@v0.3
+        uses: devcontainers/ci@v0.3.1900000450
         with:
           push: never
           runCmd: uv run pytest
