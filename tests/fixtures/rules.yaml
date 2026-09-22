@@ -2,10 +2,9 @@
 # Regras de teste
 # ---------------------------------------------------------------------------
 # Cópia própria da suíte, deliberadamente separada de `config/rules.yaml`.
-# Quando os valores provisórios forem trocados pelos confirmados no código de
-# obras de Curitiba, o arquivo de produção muda e este não: os testes
-# continuam valendo, porque testam o comportamento do validador, não os
-# números do código de obras.
+# Quando os valores de produção mudarem, o arquivo de produção muda e este
+# não: os testes continuam valendo, porque testam o comportamento do
+# validador, não os números das normas.
 #
 # Não edite este arquivo para experimentar. Para isso existe o nível 3, que
 # mexe em `config/rules.yaml`.

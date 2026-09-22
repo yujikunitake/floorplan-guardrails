@@ -11,9 +11,16 @@
 #   divisor     "1/6 da área do piso" se escreve como 6, que é como a lei
 #               costuma redigir a exigência
 #
-# ATENÇÃO: os valores abaixo são PROVISÓRIOS. Eles têm a ordem de grandeza
-# certa, mas ainda não foram conferidos contra o código de obras. Não use
-# esta ferramenta para decidir nada de verdade.
+# ATENÇÃO: os valores abaixo são DIDÁTICOS, não normativos. Curitiba não fixa
+# áreas mínimas nem frações de janela, e deixa o dimensionamento ao
+# projetista. Três larguras vêm de um anexo informativo da ABNT NBR 15575-1;
+# o resto tem a ordem de grandeza certa e mais nada. O campo source de cada
+# regra diz de onde veio o número.
+#
+# Para quem é de engenharia civil ou arquitetura: não use estes números em
+# projeto. Projeto real segue a NBR 15575 e as demais normas técnicas
+# vigentes, a legislação municipal e estadual do lugar da obra, e responde a
+# um profissional habilitado.
 # ---------------------------------------------------------------------------
 
 # Simplificação de ventilação. Não é norma, é modelagem: a área que de fato
@@ -25,7 +32,11 @@ rules:
   min_area:
     description: "Área mínima do piso do cômodo."
     unit: "m²"
-    source: "PROVISÓRIO: a confirmar contra o código de obras de Curitiba"
+    source: >-
+      Valor didático. Curitiba não fixa área mínima: o dimensionamento dos
+      cômodos é responsabilidade do projetista (Decreto Municipal 2397/2023,
+      art. 1º, § 3º). A ABNT NBR 15575-1:2013, Anexo F, também não dá área,
+      só o mobiliário mínimo de cada cômodo.
     values:
       living_room: 8.0
       bedroom: 8.0
@@ -38,12 +49,16 @@ rules:
   min_dimension:
     description: "Menor dimensão do cômodo. Num corredor, é a largura da circulação."
     unit: "m"
-    source: "PROVISÓRIO: a confirmar contra o código de obras de Curitiba"
+    source: >-
+      Sala (2,40 m), cozinha (1,50 m) e banheiro (1,10 m): ABNT NBR
+      15575-1:2013, Anexo F, Tabela F.2, que é informativo. Demais tipos: valor
+      didático, porque Curitiba deixa o dimensionamento ao projetista (Decreto
+      Municipal 2397/2023, art. 1º, § 3º).
     values:
       living_room: 2.40
       bedroom: 2.40
       kitchen: 1.50
-      bathroom: 1.00
+      bathroom: 1.10
       laundry: 1.20
       hallway: 0.90
       other: null
@@ -51,7 +66,10 @@ rules:
   lighting_divisor:
     description: "A área de janela exigida é a área do piso dividida por este número."
     unit: "divisor da área do piso"
-    source: "PROVISÓRIO: a confirmar contra o código de obras de Curitiba"
+    source: >-
+      Valor didático. Curitiba exige iluminação direta para o exterior, sem
+      fixar fração (Decreto Municipal 212/2007, Anexo 01), e a ABNT NBR
+      15575-1:2013, item 13.2, mede iluminância, não área de janela.
     values:
       living_room: 6.0
       bedroom: 6.0
@@ -64,7 +82,9 @@ rules:
   ventilation_divisor:
     description: "A área de ventilação exigida é a área de janela exigida dividida por este número."
     unit: "divisor da área de janela exigida"
-    source: "PROVISÓRIO: a confirmar contra o código de obras de Curitiba"
+    source: >-
+      Valor didático. Nem Curitiba (Decreto Municipal 212/2007, Anexo 01) nem
+      a ABNT NBR 15575-1:2013 fixam fração de ventilação.
     values:
       living_room: 2.0
       bedroom: 2.0

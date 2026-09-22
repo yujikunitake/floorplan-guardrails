@@ -80,11 +80,18 @@ Casas térreas, cômodos retangulares alinhados aos eixos, portas e janelas, at�
 cerca de dez cômodos. Fora do escopo: mais de um pavimento, estrutura, escadas,
 mobiliário, orientação solar, recuos do lote e desenho técnico executivo.
 
-Os valores normativos são **provisórios**: cada regra traz `source: "PROVISÓRIO:
-a confirmar contra o código de obras de Curitiba"`, e nenhum número foi
-conferido ainda na legislação. O cálculo de ventilação é uma **simplificação**:
-área da janela multiplicada por um fator de abertura configurável, 0,50 por
-padrão.
+Os valores normativos são **didáticos**. Curitiba não fixa áreas mínimas nem
+frações de janela: o Decreto Municipal 2397/2023 deixa o dimensionamento dos
+cômodos ao projetista. As larguras mínimas de sala, cozinha e banheiro vêm do
+Anexo F da ABNT NBR 15575-1, que é informativo; os demais números têm a ordem de
+grandeza certa e mais nada. O campo `source` de cada regra, em
+`config/rules.yaml`, diz de onde veio cada valor. O cálculo de ventilação é uma
+**simplificação**: área da janela multiplicada por um fator de abertura
+configurável, 0,50 por padrão.
+
+Uma ressalva para quem é de engenharia civil ou arquitetura: as regras daqui
+servem para mostrar o método, não para conferir projeto. Projeto real segue a
+NBR 15575 e as demais normas técnicas vigentes e a legislação do lugar da obra.
 
 Material didático. **Não substitui projeto de profissional habilitado.**
 

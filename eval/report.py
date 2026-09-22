@@ -187,7 +187,7 @@ def build_report(
         f"- Limite de iterações: {max_iterations}",
         "- Regras: `config/rules.yaml`",
         "",
-        "Os valores normativos em uso são provisórios; ver o README.",
+        "Os valores normativos em uso são didáticos; ver o README.",
         "",
     ]
 
