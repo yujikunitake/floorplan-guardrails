@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.5](https://github.com/yujikunitake/floorplan-guardrails/compare/v1.1.4...v1.1.5) (2026-09-23)
+
+
+### Continuous Integration
+
+* **repo:** show every change type in the changelog ([#27](https://github.com/yujikunitake/floorplan-guardrails/issues/27)) ([ab98d3d](https://github.com/yujikunitake/floorplan-guardrails/commit/ab98d3d02d31ae75b0f8cd094d55c3635c01475e))
+
 ## [1.1.4](https://github.com/yujikunitake/floorplan-guardrails/compare/v1.1.3...v1.1.4) (2026-09-23)
 
 
