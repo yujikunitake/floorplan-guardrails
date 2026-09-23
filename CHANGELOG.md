@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.1](https://github.com/yujikunitake/floorplan-guardrails/compare/v1.1.0...v1.1.1) (2026-09-21)
+
+
+### Bug Fixes
+
+* **generator:** accept any endpoint url the azure portal shows ([#15](https://github.com/yujikunitake/floorplan-guardrails/issues/15)) ([9d6234d](https://github.com/yujikunitake/floorplan-guardrails/commit/9d6234dc03f1bd14a6e5f470a890dc12b0ff5869))
+
 ## [1.1.0](https://github.com/yujikunitake/floorplan-guardrails/compare/v1.0.0...v1.1.0) (2026-09-21)
 
 
