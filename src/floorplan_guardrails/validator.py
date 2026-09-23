@@ -442,6 +442,11 @@ def check_exterior_door(plan: FloorPlan) -> list[Violation]:
 def check_has_bathroom(plan: FloorPlan) -> list[Violation]:
     """Toda casa precisa de ao menos um banheiro.
 
+    É a única regra funcional com fonte normativa: o Decreto Municipal
+    2397/2023 de Curitiba, art. 6º, inciso I, ao classificar a habitação
+    unifamiliar, arrola cozinha, banheiro, quarto e sala como os
+    compartimentos mínimos de uma moradia.
+
     Parece óbvio a ponto de não merecer regra, e é justamente por isso que
     precisa de uma. Sem ela, diante de um pedido impossível o modelo tem uma
     saída: encolher o programa até sobrar um cômodo só, que fecha em todas as

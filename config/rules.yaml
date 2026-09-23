@@ -15,7 +15,11 @@
 # áreas mínimas nem frações de janela, e deixa o dimensionamento ao
 # projetista. Três larguras vêm de um anexo informativo da ABNT NBR 15575-1;
 # o resto tem a ordem de grandeza certa e mais nada. O campo source de cada
-# regra diz de onde veio o número.
+# regra diz de onde veio o número e até onde ele foi conferido.
+#
+# Duas ressalvas estão anotadas nos source e não foram resolvidas: as três
+# larguras da NBR não foram lidas na norma original, que é paga, e a vigência
+# do Decreto Municipal 212/2007 ficou em aberto.
 #
 # Para quem é de engenharia civil ou arquitetura: não use estes números em
 # projeto. Projeto real segue a NBR 15575 e as demais normas técnicas
@@ -51,7 +55,12 @@ rules:
     unit: "m"
     source: >-
       Sala (2,40 m), cozinha (1,50 m) e banheiro (1,10 m): ABNT NBR
-      15575-1:2013, Anexo F, Tabela F.2, que é informativo. Demais tipos: valor
+      15575-1:2013, Anexo F, Tabela F.2, que é informativo. PROVISÓRIO quanto
+      à conferência: estes três valores vieram de fonte secundária e não foram
+      lidos na norma original, que é paga e não tem texto público. Não há
+      parâmetro municipal equivalente para substituí-los: as larguras que o
+      Decreto Municipal 212/2007, Anexo I, fixa são de circulação de área
+      comum de edifício, não de cômodo de moradia. Demais tipos: valor
       didático, porque Curitiba deixa o dimensionamento ao projetista (Decreto
       Municipal 2397/2023, art. 1º, § 3º).
     values:
@@ -68,8 +77,14 @@ rules:
     unit: "divisor da área do piso"
     source: >-
       Valor didático. Curitiba exige iluminação direta para o exterior, sem
-      fixar fração (Decreto Municipal 212/2007, Anexo 01), e a ABNT NBR
+      fixar fração (Decreto Municipal 212/2007, Anexo I), e a ABNT NBR
       15575-1:2013, item 13.2, mede iluminância, não área de janela.
+      PROVISÓRIO quanto à vigência do 212/2007: o art. 103 do Decreto
+      Municipal 2397/2023 lista as normas revogadas e o 212/2007 não está
+      entre elas, mas a Prefeitura apresenta o 2397/2023 como o regulamento
+      que unificou a legislação anterior. Não foi possível determinar qual dos
+      dois vale hoje. A exigência de fração, que é o que esta regra inventa,
+      não existe em nenhum dos dois.
     values:
       living_room: 6.0
       bedroom: 6.0
@@ -83,8 +98,9 @@ rules:
     description: "A área de ventilação exigida é a área de janela exigida dividida por este número."
     unit: "divisor da área de janela exigida"
     source: >-
-      Valor didático. Nem Curitiba (Decreto Municipal 212/2007, Anexo 01) nem
-      a ABNT NBR 15575-1:2013 fixam fração de ventilação.
+      Valor didático. Nem Curitiba (Decreto Municipal 212/2007, Anexo I) nem
+      a ABNT NBR 15575-1:2013 fixam fração de ventilação. Vale aqui a mesma
+      ressalva de vigência do 212/2007 anotada em lighting_divisor.
     values:
       living_room: 2.0
       bedroom: 2.0
