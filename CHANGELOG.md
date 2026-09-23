@@ -7,6 +7,12 @@
 
 * **notebook:** correct the size and time the student is promised ([#24](https://github.com/yujikunitake/floorplan-guardrails/issues/24)) ([7d7bd1d](https://github.com/yujikunitake/floorplan-guardrails/commit/7d7bd1d7ff2aa2f6b0c832c0fcc141d6981f66a9))
 
+
+### Documentation
+
+* **eval:** report the comparative round and its noise measurement ([#23](https://github.com/yujikunitake/floorplan-guardrails/issues/23)) ([c10bf09](https://github.com/yujikunitake/floorplan-guardrails/commit/c10bf097eaf3423abaa14080f5703381c458bcde))
+* **notebook:** make the size provocation fail and say why ([#26](https://github.com/yujikunitake/floorplan-guardrails/issues/26)) ([2b4c83a](https://github.com/yujikunitake/floorplan-guardrails/commit/2b4c83a385f2d13fac483560dcbd32b86f0df609))
+
 ## [1.1.3](https://github.com/yujikunitake/floorplan-guardrails/compare/v1.1.2...v1.1.3) (2026-09-23)
 
 
