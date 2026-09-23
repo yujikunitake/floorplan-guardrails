@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.3](https://github.com/yujikunitake/floorplan-guardrails/compare/v1.1.2...v1.1.3) (2026-09-23)
+
+
+### Bug Fixes
+
+* **rules:** state how far each source was verified ([#21](https://github.com/yujikunitake/floorplan-guardrails/issues/21)) ([686fe4a](https://github.com/yujikunitake/floorplan-guardrails/commit/686fe4ab6043eca9755ccb1d442815c680fa96d4))
+
 ## [1.1.2](https://github.com/yujikunitake/floorplan-guardrails/compare/v1.1.1...v1.1.2) (2026-09-23)
 
 
