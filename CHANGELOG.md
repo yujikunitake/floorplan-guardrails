@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.4](https://github.com/yujikunitake/floorplan-guardrails/compare/v1.1.3...v1.1.4) (2026-09-23)
+
+
+### Bug Fixes
+
+* **notebook:** correct the size and time the student is promised ([#24](https://github.com/yujikunitake/floorplan-guardrails/issues/24)) ([7d7bd1d](https://github.com/yujikunitake/floorplan-guardrails/commit/7d7bd1d7ff2aa2f6b0c832c0fcc141d6981f66a9))
+
 ## [1.1.3](https://github.com/yujikunitake/floorplan-guardrails/compare/v1.1.2...v1.1.3) (2026-09-23)
 
 
