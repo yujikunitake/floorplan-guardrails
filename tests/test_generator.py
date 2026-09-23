@@ -55,7 +55,7 @@ def test_instructions_carry_no_normative_value() -> None:
     a reprovação. O modelo só descobre as regras pelo relatório.
 
     O teste vale para quaisquer valores, então continua de pé quando os
-    provisórios forem trocados pelos confirmados no código de obras.
+    valores de produção mudarem.
     """
     rules = load_rules(REPO_ROOT / DEFAULT_RULES_PATH)
 
