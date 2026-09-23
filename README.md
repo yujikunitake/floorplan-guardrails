@@ -70,9 +70,13 @@ a descobre lendo o relatório. A restrição é deliberada, porque sem ela a
 primeira planta seria aprovada e não haveria o que demonstrar, e um teste falha
 caso qualquer valor de `config/rules.yaml` alcance o prompt.
 
-Em avaliação com 21 descrições, 17 convergiram em até quatro iterações e 14
-apresentaram geometria correta já na primeira tentativa; o que limita o modelo é
-o tamanho da casa, não a clareza do pedido ([relatório](docs/avaliacao.md)).
+Em avaliação com 21 descrições e 84 execuções, a régua em uso aprovou 30 de 42
+plantas em até quatro iterações, e 26 de 42 saíram com geometria correta já na
+primeira tentativa. Nenhum desses números sustenta conclusão sozinho: repetir a
+mesma descrição com a mesma régua muda o desfecho em uma de cada quatro vezes. A
+tendência que sobrevive ao ruído é o tamanho da casa, não a clareza do pedido.
+Plantas de até 7 cômodos aprovam em 89% das execuções, e de 8 em diante a taxa
+cai para 29% ([relatório](docs/avaliacao.md)).
 
 ## Escopo e limites
 
