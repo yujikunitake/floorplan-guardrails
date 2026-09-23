@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.2](https://github.com/yujikunitake/floorplan-guardrails/compare/v1.1.1...v1.1.2) (2026-09-23)
+
+
+### Bug Fixes
+
+* **rules:** cite each source and use the nbr bathroom width ([#18](https://github.com/yujikunitake/floorplan-guardrails/issues/18)) ([0ee912a](https://github.com/yujikunitake/floorplan-guardrails/commit/0ee912a4c9a789355a549124e3155f304da6f03f))
+
 ## [1.1.1](https://github.com/yujikunitake/floorplan-guardrails/compare/v1.1.0...v1.1.1) (2026-09-21)
 
 
