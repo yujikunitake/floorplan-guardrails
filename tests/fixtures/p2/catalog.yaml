@@ -1,0 +1,67 @@
+# ---------------------------------------------------------------------------
+# Catálogo de teste do P2
+# ---------------------------------------------------------------------------
+# Cópia própria da suíte, deliberadamente separada de
+# `config/furniture_catalog.yaml`: o catálogo de produção pode mudar sem
+# quebrar os testes. Só traz os itens que os testes usam.
+# ---------------------------------------------------------------------------
+
+bed_double:
+  name: "Cama de casal"
+  width: 1.40
+  depth: 1.90
+  room_types: [bedroom]
+  use_sides: [left, right]
+  use_mode: all
+  blocks_use_zones: true
+  source: "Catálogo de teste."
+
+bed_single:
+  name: "Cama de solteiro"
+  width: 0.90
+  depth: 1.90
+  room_types: [bedroom]
+  use_sides: [left, right]
+  use_mode: any
+  blocks_use_zones: true
+  source: "Catálogo de teste."
+
+nightstand:
+  name: "Mesa de cabeceira"
+  width: 0.45
+  depth: 0.40
+  room_types: [bedroom]
+  use_sides: []
+  use_mode: all
+  blocks_use_zones: false
+  source: "Catálogo de teste."
+
+wardrobe:
+  name: "Guarda-roupa"
+  width: 1.60
+  depth: 0.60
+  room_types: [bedroom]
+  use_sides: [front]
+  use_mode: all
+  blocks_use_zones: true
+  source: "Catálogo de teste."
+
+sofa:
+  name: "Sofá"
+  width: 2.00
+  depth: 0.90
+  room_types: [living_room]
+  use_sides: [front]
+  use_mode: all
+  blocks_use_zones: true
+  source: "Catálogo de teste."
+
+toilet:
+  name: "Vaso sanitário"
+  width: 0.40
+  depth: 0.65
+  room_types: [bathroom]
+  use_sides: [front]
+  use_mode: all
+  blocks_use_zones: true
+  source: "Catálogo de teste."
