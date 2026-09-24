@@ -22,7 +22,7 @@ jobs:
           set -uo pipefail
 
           types='feat|fix|docs|test|refactor|chore|ci|build|perf'
-          scopes='schema|geometry|validator|rules|renderer|generator|loop|notebook|eval|devcontainer|ci|docs|repo'
+          scopes='schema|geometry|validator|rules|renderer|generator|loop|notebook|eval|devcontainer|ci|docs|repo|furniture|furnisher|inspector|negotiation'
           pattern="^($types)\(($scopes)\): [a-z]"
 
           failed=0
