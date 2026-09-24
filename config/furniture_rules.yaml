@@ -1,0 +1,62 @@
+# ---------------------------------------------------------------------------
+# Parâmetros de circulação do P2
+# ---------------------------------------------------------------------------
+# Este é o arquivo do nível 3 da oficina do P2. Mude um número aqui, carregue
+# os parâmetros de novo e rode a mesma negociação: o fiscal passa a exigir
+# outra coisa, e o mobiliador precisa se virar para atender.
+#
+# O mobiliador e o fiscal NUNCA veem estes números nas instruções. O
+# mobiliador aprende o que é exigido só pelo parecer que recebe de volta.
+#
+# Os três parâmetros são obrigatórios, e nenhum outro é aceito:
+#
+#   door_clearance_depth   espaço livre diante do vão de cada porta, para
+#                          dentro de cada cômodo que ela liga
+#   use_zone_depth         faixa livre diante de cada lado de uso de um móvel,
+#                          com um valor por item do catálogo. Todo item com
+#                          use_sides no catálogo precisa estar aqui
+#   turning_diameter       giro de cadeira de rodas, verificado só quando o
+#                          morador usa cadeira e só nos room_types listados
+#
+# ATENÇÃO: os valores abaixo são DIDÁTICOS e PROVISÓRIOS. O campo source de
+# cada parâmetro diz de onde veio o número e até onde ele foi conferido.
+#
+# Para quem é de engenharia civil ou arquitetura: não use estes números em
+# projeto. Acessibilidade segue a ABNT NBR 9050 e a legislação do lugar da
+# obra, e responde a um profissional habilitado.
+# ---------------------------------------------------------------------------
+
+door_clearance_depth:
+  description: "Profundidade livre diante do vão de cada porta."
+  unit: "m"
+  source: "Valor didático; PROVISÓRIO."
+  value: 0.80
+
+use_zone_depth:
+  description: "Profundidade da faixa livre diante de cada lado de uso do móvel."
+  unit: "m"
+  source: "Valor didático; PROVISÓRIO."
+  values:
+    bed_double: 0.50
+    bed_single: 0.50
+    wardrobe: 0.50
+    desk: 0.70
+    sofa: 0.40
+    dining_table: 0.70
+    fridge: 0.60
+    stove: 0.60
+    kitchen_sink: 0.60
+    toilet: 0.50
+    washbasin: 0.50
+    shower: 0.60
+    washing_machine: 0.60
+    laundry_tub: 0.60
+
+turning_diameter:
+  description: "Diâmetro do giro de 360 graus de uma cadeira de rodas."
+  unit: "m"
+  source: >-
+    ABNT NBR 9050, por fonte secundária; PROVISÓRIO quanto à conferência no
+    original.
+  value: 1.50
+  room_types: [bedroom, bathroom, living_room]

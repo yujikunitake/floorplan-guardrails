@@ -1,0 +1,30 @@
+# ---------------------------------------------------------------------------
+# Parâmetros de teste do P2
+# ---------------------------------------------------------------------------
+# Cópia própria da suíte, deliberadamente separada de
+# `config/furniture_rules.yaml`, e casada com `catalog.yaml` desta pasta.
+# ---------------------------------------------------------------------------
+
+door_clearance_depth:
+  description: "Profundidade livre diante do vão de cada porta."
+  unit: "m"
+  source: "Parâmetro de teste."
+  value: 0.80
+
+use_zone_depth:
+  description: "Profundidade da faixa livre diante de cada lado de uso."
+  unit: "m"
+  source: "Parâmetro de teste."
+  values:
+    bed_double: 0.50
+    bed_single: 0.50
+    wardrobe: 0.50
+    sofa: 0.40
+    toilet: 0.50
+
+turning_diameter:
+  description: "Diâmetro do giro de uma cadeira de rodas."
+  unit: "m"
+  source: "Parâmetro de teste."
+  value: 1.50
+  room_types: [bedroom, bathroom, living_room]

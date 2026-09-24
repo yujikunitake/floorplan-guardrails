@@ -1,0 +1,208 @@
+# ---------------------------------------------------------------------------
+# Catálogo de móveis do P2
+# ---------------------------------------------------------------------------
+# Cada bloco é um móvel. A chave do bloco (bed_double, wardrobe...) é o
+# item_id que o pedido e o mobiliador usam.
+#
+# Estes números são DIMENSÃO DE MÓVEL, não exigência. Por isso o catálogo pode
+# ir inteiro na mensagem do mobiliador. As exigências de circulação moram em
+# config/furniture_rules.yaml, e essas o modelo nunca vê.
+#
+# Como ler cada campo:
+#
+#   width, depth       medidas em metros, com o móvel na rotação 0: width
+#                      corre de oeste a leste, depth de sul a norte
+#   room_types         em que tipos de cômodo o móvel pode ficar
+#   use_sides          lados que precisam de faixa livre para usar o móvel:
+#                      front (frente), back (fundo), left (esquerda),
+#                      right (direita). Com rotação 0, a frente é o lado sul
+#   use_mode           all: todos os lados da lista precisam estar livres
+#                      any: basta um deles (cama de solteiro encostada na
+#                      parede)
+#   blocks_use_zones   false quando o corpo do móvel não atrapalha a faixa de
+#                      uso dos outros (a mesa de cabeceira fica ao lado da
+#                      cama sem impedir que se deite nela)
+#
+# ATENÇÃO: as dimensões são DIDÁTICAS. São medidas usuais de mercado e não
+# foram conferidas no original da NBR 15575-1. Não use em projeto.
+# ---------------------------------------------------------------------------
+
+bed_double:
+  name: "Cama de casal"
+  width: 1.40
+  depth: 1.90
+  room_types: [bedroom]
+  use_sides: [left, right]
+  use_mode: all
+  blocks_use_zones: true
+  source: >-
+    Valor didático: dimensão usual de mercado; PROVISÓRIO quanto à
+    conferência com a NBR 15575-1, Anexo F (fonte secundária).
+
+bed_single:
+  name: "Cama de solteiro"
+  width: 0.90
+  depth: 1.90
+  room_types: [bedroom]
+  use_sides: [left, right]
+  use_mode: any
+  blocks_use_zones: true
+  source: >-
+    Valor didático: dimensão usual de mercado; PROVISÓRIO quanto à
+    conferência com a NBR 15575-1, Anexo F (fonte secundária).
+
+nightstand:
+  name: "Mesa de cabeceira"
+  width: 0.45
+  depth: 0.40
+  room_types: [bedroom]
+  use_sides: []
+  use_mode: all
+  blocks_use_zones: false
+  source: >-
+    Valor didático: dimensão usual de mercado; PROVISÓRIO quanto à
+    conferência com a NBR 15575-1, Anexo F (fonte secundária).
+
+wardrobe:
+  name: "Guarda-roupa"
+  width: 1.60
+  depth: 0.60
+  room_types: [bedroom]
+  use_sides: [front]
+  use_mode: all
+  blocks_use_zones: true
+  source: >-
+    Valor didático: dimensão usual de mercado; PROVISÓRIO quanto à
+    conferência com a NBR 15575-1, Anexo F (fonte secundária).
+
+desk:
+  name: "Escrivaninha"
+  width: 1.00
+  depth: 0.55
+  room_types: [bedroom, living_room, other]
+  use_sides: [front]
+  use_mode: all
+  blocks_use_zones: true
+  source: >-
+    Valor didático: dimensão usual de mercado; PROVISÓRIO quanto à
+    conferência com a NBR 15575-1, Anexo F (fonte secundária).
+
+sofa:
+  name: "Sofá"
+  width: 2.00
+  depth: 0.90
+  room_types: [living_room]
+  use_sides: [front]
+  use_mode: all
+  blocks_use_zones: true
+  source: >-
+    Valor didático: dimensão usual de mercado; PROVISÓRIO quanto à
+    conferência com a NBR 15575-1, Anexo F (fonte secundária).
+
+dining_table:
+  name: "Mesa de jantar (4 lugares)"
+  width: 1.20
+  depth: 0.80
+  room_types: [living_room, kitchen]
+  use_sides: [front, back]
+  use_mode: all
+  blocks_use_zones: true
+  source: >-
+    Valor didático: dimensão usual de mercado; PROVISÓRIO quanto à
+    conferência com a NBR 15575-1, Anexo F (fonte secundária).
+
+fridge:
+  name: "Geladeira"
+  width: 0.70
+  depth: 0.70
+  room_types: [kitchen]
+  use_sides: [front]
+  use_mode: all
+  blocks_use_zones: true
+  source: >-
+    Valor didático: dimensão usual de mercado; PROVISÓRIO quanto à
+    conferência com a NBR 15575-1, Anexo F (fonte secundária).
+
+stove:
+  name: "Fogão"
+  width: 0.55
+  depth: 0.60
+  room_types: [kitchen]
+  use_sides: [front]
+  use_mode: all
+  blocks_use_zones: true
+  source: >-
+    Valor didático: dimensão usual de mercado; PROVISÓRIO quanto à
+    conferência com a NBR 15575-1, Anexo F (fonte secundária).
+
+kitchen_sink:
+  name: "Pia de cozinha"
+  width: 1.20
+  depth: 0.55
+  room_types: [kitchen]
+  use_sides: [front]
+  use_mode: all
+  blocks_use_zones: true
+  source: >-
+    Valor didático: dimensão usual de mercado; PROVISÓRIO quanto à
+    conferência com a NBR 15575-1, Anexo F (fonte secundária).
+
+toilet:
+  name: "Vaso sanitário"
+  width: 0.40
+  depth: 0.65
+  room_types: [bathroom]
+  use_sides: [front]
+  use_mode: all
+  blocks_use_zones: true
+  source: >-
+    Valor didático: dimensão usual de mercado; PROVISÓRIO quanto à
+    conferência com a NBR 15575-1, Anexo F (fonte secundária).
+
+washbasin:
+  name: "Lavatório"
+  width: 0.50
+  depth: 0.40
+  room_types: [bathroom]
+  use_sides: [front]
+  use_mode: all
+  blocks_use_zones: true
+  source: >-
+    Valor didático: dimensão usual de mercado; PROVISÓRIO quanto à
+    conferência com a NBR 15575-1, Anexo F (fonte secundária).
+
+shower:
+  name: "Box"
+  width: 0.90
+  depth: 0.90
+  room_types: [bathroom]
+  use_sides: [front]
+  use_mode: all
+  blocks_use_zones: true
+  source: >-
+    Valor didático: dimensão usual de mercado; PROVISÓRIO quanto à
+    conferência com a NBR 15575-1, Anexo F (fonte secundária).
+
+washing_machine:
+  name: "Máquina de lavar"
+  width: 0.60
+  depth: 0.65
+  room_types: [laundry]
+  use_sides: [front]
+  use_mode: all
+  blocks_use_zones: true
+  source: >-
+    Valor didático: dimensão usual de mercado; PROVISÓRIO quanto à
+    conferência com a NBR 15575-1, Anexo F (fonte secundária).
+
+laundry_tub:
+  name: "Tanque"
+  width: 0.55
+  depth: 0.50
+  room_types: [laundry]
+  use_sides: [front]
+  use_mode: all
+  blocks_use_zones: true
+  source: >-
+    Valor didático: dimensão usual de mercado; PROVISÓRIO quanto à
+    conferência com a NBR 15575-1, Anexo F (fonte secundária).
