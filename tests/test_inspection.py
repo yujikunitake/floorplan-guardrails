@@ -1,11 +1,12 @@
-"""Testes das verificações do P2 que entram na Fase 1.
+"""Testes das verificações do P2.
 
 O formato é o do validador do P1: uma proposta correta, e uma violação por
 regra, isolada sempre que a regra permite isolar. Para isolar, o pedido é
 ajustado junto com a proposta quando a regra testada não é `request_matches`.
 
-Também aqui: a pré-condição da planta de entrada e a função `free_depth`,
-que sustenta toda a circulação da Fase 2.
+Também aqui: a pré-condição da planta de entrada, a função `free_depth` e o
+grupo circulação, com um caso que passa e um que falha para cada regra. As
+mensagens de circulação são conferidas por inteiro, porque são o produto.
 
 Os testes usam só as fixtures de `tests/fixtures/p2/`, nunca `config/`.
 """
@@ -19,17 +20,24 @@ from floorplan_guardrails.furniture import (
     Footprint,
     FurnishedPlan,
     FurnishingRequest,
+    Profile,
     Segment,
     load_catalog,
 )
+from floorplan_guardrails.furniture_rules import FurnitureRules, load_furniture_rules
 from floorplan_guardrails.geometry import Interval
 from floorplan_guardrails.inspection import (
+    CIRCULATION_RULES,
     INTEGRITY_RULES_P2,
     FurnitureViolation,
     InvalidInputPlan,
+    door_faces,
     free_depth,
+    inspect,
+    largest_free_square,
     precheck,
     require_approved_plan,
+    use_zones,
 )
 from floorplan_guardrails.renderer import broken_room_ids
 from floorplan_guardrails.rules import load_rules
@@ -39,6 +47,7 @@ from floorplan_guardrails.validator import Violation
 FIXTURES = Path(__file__).parent / "fixtures" / "p2"
 CATALOG = load_catalog(FIXTURES / "catalog.yaml")
 PLAN_RULES = load_rules(FIXTURES / "plan_rules.yaml")
+RULES = load_furniture_rules(CATALOG, FIXTURES / "furniture_rules.yaml")
 
 
 def read(name: str) -> dict:
@@ -417,3 +426,315 @@ def test_free_depth_works_in_the_four_directions(
 ) -> None:
     assert free_depth(base, normal, ROOM, []) == pytest.approx(wall_limit)
     assert free_depth(base, normal, ROOM, [obstacle]) == pytest.approx(blocked)
+
+
+# --- circulação --------------------------------------------------------------
+#
+# A proposta de referência passa em todas as regras de circulação com o perfil
+# comum. Com a cama em y = 4,00, a porta do quarto (parede sul, x de 1,00 a
+# 1,90) tem 1,00 m livre; a cama tem 1,20 m à esquerda e 0,80 m à direita, até
+# o guarda-roupa; o guarda-roupa tem 0,80 m na frente, até a cama.
+
+WHEELCHAIR = Profile(accessible=True)
+
+
+def furnished(proposal: dict) -> FurnishedPlan:
+    return FurnishedPlan(plan=FloorPlan.model_validate(plan_data()), proposal=proposal)
+
+
+def check(
+    proposal: dict,
+    profile: Profile | None = None,
+    rules: FurnitureRules = RULES,
+    request: dict | None = None,
+) -> list[FurnitureViolation]:
+    return inspect(
+        furnished(proposal),
+        CATALOG,
+        rules,
+        profile or Profile(),
+        FurnishingRequest.model_validate(request or request_data()),
+    )
+
+
+def only(violations: list[FurnitureViolation], rule_id: str) -> list:
+    return [v for v in violations if v.rule_id == rule_id]
+
+
+def use_zone_of(
+    violations: list[FurnitureViolation], placement_id: str
+) -> FurnitureViolation:
+    """A violação de faixa de uso de um móvel, entre as de outros móveis."""
+    return next(
+        v for v in only(violations, "use_zone") if v.placement_ids[0] == placement_id
+    )
+
+
+def test_the_reference_proposal_passes_every_rule() -> None:
+    assert check(proposal_data()) == []
+
+
+def test_the_circulation_group_is_the_one_in_the_plan() -> None:
+    assert CIRCULATION_RULES == {"door_clearance", "use_zone", "turning_space"}
+
+
+def test_inspect_runs_both_groups_together() -> None:
+    proposal = proposal_data()
+    placement(proposal, "m1")["x"] = 3.5  # o sofá sai da sala
+
+    rule_ids = {v.rule_id for v in check(proposal, WHEELCHAIR)}
+
+    assert "inside_room" in rule_ids
+    assert "turning_space" in rule_ids
+
+
+def test_every_circulation_violation_cites_the_source_of_its_parameter() -> None:
+    proposal = proposal_data()
+    placement(proposal, "m2")["y"] = 3.35
+    placement(proposal, "m4")["x"] = 2.8
+
+    violations = check(proposal, WHEELCHAIR)
+
+    assert {v.rule_id for v in violations} == CIRCULATION_RULES
+    for violation in violations:
+        assert violation.unit == "m"
+        assert violation.source == "Parâmetro de teste."
+        assert violation.measured < violation.required
+
+
+# --- door_clearance ------------------------------------------------------------
+
+
+def test_a_door_with_room_in_front_passes() -> None:
+    proposal = proposal_data()
+    placement(proposal, "m2")["y"] = 3.8  # a cama fica a 0,80 m do vão, no limite
+
+    assert only(check(proposal), "door_clearance") == []
+
+
+def test_a_door_blocked_on_the_bedroom_face_is_reported() -> None:
+    proposal = proposal_data()
+    placement(proposal, "m2")["y"] = 3.35
+
+    violations = check(proposal)
+
+    assert [v.rule_id for v in violations] == ["door_clearance"]
+    assert violations[0].room_ids == ["r3"]
+    assert violations[0].placement_ids == ["m2"]
+    assert violations[0].measured == pytest.approx(0.35)
+    assert violations[0].required == pytest.approx(0.80)
+    assert violations[0].message == (
+        'O móvel "Cama de casal" (m2) deixa só 0,35 m livres diante da porta na '
+        'parede sul do cômodo "Quarto" (r3); são exigidos 0,80 m.'
+    )
+
+
+def test_the_same_door_blocked_on_the_living_room_face_is_reported() -> None:
+    """A porta entre sala e quarto é conferida pelas duas faces."""
+    proposal = proposal_data()
+    placement(proposal, "m1").update(y=1.8, rotation=0)  # sofá encostado no vão
+
+    violations = check(proposal)
+
+    assert [v.rule_id for v in violations] == ["door_clearance"]
+    assert violations[0].room_ids == ["r1"]
+    assert violations[0].measured == pytest.approx(0.30)
+    assert "diante da porta na parede norte do cômodo" in violations[0].message
+
+
+def test_an_interior_door_has_two_faces_and_the_entrance_one() -> None:
+    faces = door_faces(furnished(proposal_data()), CATALOG, RULES)
+
+    assert len(faces) == 7  # três portas internas, duas faces cada, e a entrada
+    assert [(f.room.id, f.wall) for f in faces if f.wall == "west"] == [
+        ("r1", "west"),
+        ("r2", "west"),
+    ]
+    entrance = next(f for f in faces if (f.room.id, f.wall) == ("r1", "west"))
+    assert entrance.normal == "east"
+
+
+def test_two_pieces_blocking_a_door_are_named_together() -> None:
+    proposal = proposal_data()
+    placement(proposal, "m2")["y"] = 3.35
+    placement(proposal, "m3").update(x=0.6, y=3.35)  # pega 5 cm do vão
+
+    violations = check(proposal)
+
+    assert [v.rule_id for v in violations] == ["door_clearance"]
+    assert violations[0].placement_ids == ["m2", "m3"]
+    assert violations[0].message.startswith(
+        'O móvel "Cama de casal" (m2) e o móvel "Mesa de cabeceira" (m3) deixam '
+        "só 0,35 m livres"
+    )
+
+
+# --- use_zone ------------------------------------------------------------------
+
+
+def test_every_use_side_has_room_in_the_reference() -> None:
+    measured = {
+        (z.placement.id, z.side): round(z.measured, 2)
+        for z in use_zones(furnished(proposal_data()), CATALOG, RULES)
+    }
+
+    assert measured == {
+        ("m1", "front"): 2.1,
+        ("m2", "left"): 1.2,
+        ("m2", "right"): 0.8,
+        ("m4", "front"): 0.8,
+        ("m5", "front"): 2.35,
+    }
+
+
+def test_use_mode_all_fails_with_one_short_side() -> None:
+    proposal = proposal_data()
+    placement(proposal, "m2")["x"] = 0.2  # a cama chega perto da parede oeste
+
+    violations = check(proposal)
+
+    assert [v.rule_id for v in violations] == ["use_zone"]
+    assert violations[0].placement_ids == ["m2"]
+    assert violations[0].measured == pytest.approx(0.20)
+    assert violations[0].message == (
+        'O móvel "Cama de casal" (m2) tem 0,20 m livres à esquerda (lado oeste), '
+        "até a parede; são exigidos 0,50 m."
+    )
+
+
+def test_use_mode_all_reports_the_shortest_side() -> None:
+    proposal = proposal_data()
+    placement(proposal, "m2")["x"] = 0.3  # 0,30 m à esquerda
+    placement(proposal, "m4")["x"] = 2.1  # 0,40 m à direita, e a frente dele também
+
+    bed = use_zone_of(check(proposal), "m2")
+
+    assert bed.measured == pytest.approx(0.30)
+    assert bed.placement_ids == ["m2", "m4"]
+    assert bed.message == (
+        'O móvel "Cama de casal" (m2) tem 0,30 m livres à esquerda (lado oeste), '
+        "até a parede, e 0,40 m livres à direita (lado leste), até o móvel "
+        '"Guarda-roupa" (m4); são exigidos 0,50 m de cada lado.'
+    )
+
+
+def single_bed(proposal: dict, request: dict, x: float) -> None:
+    """Troca a cama de casal por uma de solteiro, que só precisa de um lado."""
+    placement(proposal, "m2").update(item_id="bed_single", x=x)
+    request["items"]["r3"][0] = "bed_single"
+
+
+def test_use_mode_any_passes_with_one_free_side() -> None:
+    proposal, request = proposal_data(), request_data()
+    single_bed(proposal, request, x=0.0)  # encostada na parede oeste
+
+    assert check(proposal, request=request) == []
+
+
+def test_use_mode_any_fails_when_every_side_is_short() -> None:
+    proposal, request = proposal_data(), request_data()
+    single_bed(proposal, request, x=0.2)
+    placement(proposal, "m4")["x"] = 1.4  # guarda-roupa a 0,30 m do lado leste
+
+    violations = check(proposal, request=request)
+    bed = use_zone_of(violations, "m2")
+
+    assert bed.measured == pytest.approx(0.30)  # em "any", o lado mais livre
+    assert bed.message == (
+        'O móvel "Cama de solteiro" (m2) precisa de ao menos um lado livre, e '
+        "nenhum está: tem 0,20 m livres à esquerda (lado oeste), até a parede, e "
+        '0,30 m livres à direita (lado leste), até o móvel "Guarda-roupa" (m4); '
+        "são exigidos 0,50 m em ao menos um deles."
+    )
+
+
+def test_a_nightstand_beside_the_bed_does_not_block_its_side() -> None:
+    """Na referência a mesa de cabeceira encosta no lado direito da cama."""
+    zones = use_zones(furnished(proposal_data()), CATALOG, RULES)
+    right = next(z for z in zones if (z.placement.id, z.side) == ("m2", "right"))
+
+    assert right.blocker_ids == ["m4"]
+    assert right.measured == pytest.approx(0.80)
+
+
+def test_the_nightstand_would_block_if_the_catalog_said_so() -> None:
+    """É o campo `blocks_use_zones` que decide, não o tipo do móvel."""
+    catalog = {**CATALOG}
+    catalog["nightstand"] = CATALOG["nightstand"].model_copy(
+        update={"blocks_use_zones": True}
+    )
+
+    violations = inspect(
+        furnished(proposal_data()),
+        catalog,
+        RULES,
+        Profile(),
+        FurnishingRequest.model_validate(request_data()),
+    )
+
+    assert [v.rule_id for v in violations] == ["use_zone"]
+    assert violations[0].placement_ids == ["m2", "m3"]
+    assert violations[0].measured == pytest.approx(0.0)
+
+
+# --- turning_space -------------------------------------------------------------
+
+
+def test_turning_is_not_checked_without_the_profile() -> None:
+    """O quarto da referência não tem giro, mas o perfil comum não pede."""
+    assert check(proposal_data(), Profile()) == []
+
+
+def test_a_room_without_turning_space_is_reported() -> None:
+    violations = check(proposal_data(), WHEELCHAIR)
+
+    assert [v.rule_id for v in violations] == ["turning_space"]
+    assert violations[0].room_ids == ["r3"]
+    assert violations[0].placement_ids == []
+    assert violations[0].measured == pytest.approx(1.20)
+    assert violations[0].message == (
+        'O cômodo "Quarto" (r3) não tem espaço de giro para cadeira de rodas: o '
+        "maior quadrado livre tem 1,20 m de lado, e são exigidos 1,50 m."
+    )
+
+
+def test_turning_space_at_the_limit_passes() -> None:
+    rules = RULES.model_copy(deep=True)
+    rules.turning_diameter.value = 1.2
+
+    assert check(proposal_data(), WHEELCHAIR, rules) == []
+
+
+def test_turning_is_only_checked_in_the_listed_room_types() -> None:
+    rules = RULES.model_copy(deep=True)
+    rules.turning_diameter.room_types = ["bathroom", "living_room"]
+
+    assert check(proposal_data(), WHEELCHAIR, rules) == []
+
+
+def test_the_largest_square_of_an_empty_room_is_its_short_side() -> None:
+    square = largest_free_square(ROOM, [])
+
+    assert square.x1 - square.x0 == pytest.approx(3.0)
+
+
+def test_the_largest_square_is_measured_between_the_furniture() -> None:
+    """Um móvel ocupa o cômodo de x = 1,05 em diante: sobra uma faixa de 1,05 m."""
+    room = Room(id="r4", type="bathroom", name="Banheiro", x=4, y=3, width=3, depth=3)
+    obstacle = Footprint(5.05, 3.0, 7.0, 6.0)
+
+    square = largest_free_square(room, [obstacle])
+
+    assert square.x1 - square.x0 == pytest.approx(1.05)
+    assert square.y1 - square.y0 == pytest.approx(1.05)
+    assert square.x1 <= obstacle.x0 + 1e-9  # o quadrado não entra no móvel
+
+
+def test_the_largest_square_does_not_enter_the_furniture_by_the_tolerance() -> None:
+    """Sem medida exata, o quadrado entraria 1 cm no vaso e mediria 2,36 m."""
+    room = Room(id="r4", type="bathroom", name="Banheiro", x=4, y=3, width=3, depth=3)
+    toilet = Footprint(6.2, 5.35, 6.6, 6.0)
+
+    square = largest_free_square(room, [toilet])
+
+    assert square.x1 - square.x0 == pytest.approx(2.35)
