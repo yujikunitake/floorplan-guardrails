@@ -29,6 +29,7 @@ import matplotlib.pyplot as plt
 from matplotlib.axes import Axes
 from matplotlib.figure import Figure
 from matplotlib.patches import Circle, Polygon, Rectangle
+from matplotlib.text import Text
 
 from floorplan_guardrails.furniture import (
     Catalog,
@@ -40,7 +41,7 @@ from floorplan_guardrails.furniture import (
     side_direction,
 )
 from floorplan_guardrails.furniture_rules import FurnitureRules
-from floorplan_guardrails.geometry import TOLERANCE
+from floorplan_guardrails.geometry import TOLERANCE, span_x, span_y
 from floorplan_guardrails.inspection import (
     FurnitureViolation,
     clearance_box,
@@ -64,6 +65,7 @@ from floorplan_guardrails.renderer import (
     draw_plan,
     plan_bounds,
 )
+from floorplan_guardrails.schema import Room
 from floorplan_guardrails.validator import number
 
 #: Preenchimento e traço de um móvel sem problema.
@@ -295,17 +297,41 @@ def draw_turning(ax: Axes, square: Footprint, required: float, room_id: str) -> 
     caption.set_gid(f"turning-label:{room_id}")
 
 
-def move_room_labels(ax: Axes, furnished: FurnishedPlan, catalog: Catalog) -> None:
-    """Tira o nome do cômodo de cima dos móveis.
+def room_label(ax: Axes, room: Room) -> Text | None:
+    """O rótulo que `draw_plan` escreveu para o cômodo, se estiver no eixo.
 
-    O P1 escreve o nome e a área no centro de cada cômodo, onde num quarto
-    costuma estar a cama. Aqui o rótulo vai para o centro do maior quadrado
-    livre do cômodo. `draw_plan` escreve um texto por cômodo, na ordem da
-    planta, e nenhum outro: é por essa ordem que cada texto é achado.
+    O P1 escreve um texto por cômodo, no centro do retângulo, com o nome na
+    primeira linha, a área na segunda e, se houver, a contagem de violações
+    na terceira. É por esse conteúdo e por essa posição que o texto é achado,
+    e não pela ordem em `ax.texts`. Se o P1 mudar esse formato, a função
+    devolve `None`; o teste `test_every_room_label_of_the_p1_is_found`
+    quebra, e o desenho continua saindo, só com o rótulo no lugar original.
     """
-    for room, label in zip(furnished.plan.rooms, ax.texts, strict=True):
+    horizontal = span_x(room)
+    vertical = span_y(room)
+    middle_x = (horizontal.start + horizontal.end) / 2
+    middle_y = (vertical.start + vertical.end) / 2
+
+    for text in ax.texts:
+        name = text.get_text().split("\n")[0]
+        x, y = text.get_position()
+        if name == room.name and abs(x - middle_x) < 1e-9 and abs(y - middle_y) < 1e-9:
+            return text
+
+    return None
+
+
+def move_room_labels(ax: Axes, furnished: FurnishedPlan, catalog: Catalog) -> None:
+    """Tira o rótulo do cômodo de cima dos móveis.
+
+    O P1 escreve o nome, a área e a contagem de violações no centro de cada
+    cômodo, onde num quarto costuma estar a cama. Os três estão num único
+    texto, que vai inteiro para o centro do maior quadrado livre do cômodo.
+    """
+    for room in furnished.plan.rooms:
         furniture = room_furniture(furnished, catalog, room.id)
-        if not furniture:
+        label = room_label(ax, room)
+        if not furniture or label is None:
             continue
 
         square = largest_free_square(room, [box for _, box in furniture])

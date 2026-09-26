@@ -740,11 +740,12 @@ def _positions(start: float, end: float, side: float) -> list[float]:
 
 
 def touches_inside(first: Footprint, second: Footprint) -> bool:
-    """Se dois retângulos têm alguma área em comum, por menor que seja.
+    """Se dois retângulos têm área em comum, e não só uma borda.
 
-    Aqui a comparação é exata, sem a tolerância de 1 cm: com ela, o quadrado
-    poderia entrar 1 cm no móvel e o lado medido sairia 1 cm maior do que o
-    espaço de verdade.
+    Aqui não vale a tolerância de 1 cm: com ela, o quadrado poderia entrar
+    1 cm no móvel e o lado medido sairia 1 cm maior do que o espaço de
+    verdade. A margem de 1e-9 m só absorve o erro de ponto flutuante, como o
+    de 0.1 + 0.2, que não chega perto disso.
     """
     horizontal = min(first.x1, second.x1) - max(first.x0, second.x0)
     vertical = min(first.y1, second.y1) - max(first.y0, second.y0)

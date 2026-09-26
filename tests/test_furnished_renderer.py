@@ -20,6 +20,8 @@ from floorplan_guardrails.furnished_renderer import (
     BROKEN_ZONE_WIDTH,
     draw_furnished,
     draw_negotiation,
+    move_room_labels,
+    room_label,
     round_title,
 )
 from floorplan_guardrails.furniture import (
@@ -31,7 +33,7 @@ from floorplan_guardrails.furniture import (
 )
 from floorplan_guardrails.furniture_rules import load_furniture_rules
 from floorplan_guardrails.inspection import FurnitureViolation, inspect
-from floorplan_guardrails.renderer import BROKEN_EDGE, save_png
+from floorplan_guardrails.renderer import BROKEN_EDGE, draw_plan, save_png
 
 FIXTURES = Path(__file__).parent / "fixtures" / "p2"
 CATALOG = load_catalog(FIXTURES / "catalog.yaml")
@@ -182,6 +184,48 @@ def test_the_room_label_moves_off_the_furniture() -> None:
     room_label = next(t for t in ax.texts if t.get_text().startswith("Quarto"))
     x, y = room_label.get_position()
     assert not (bed.x0 < x < bed.x1 and bed.y0 < y < bed.y1)
+
+
+def test_every_room_label_of_the_p1_is_found() -> None:
+    """O alarme para uma mudança no P1.
+
+    `room_label` acha o texto que `draw_plan` escreve pelo conteúdo (nome na
+    primeira linha) e pela posição (centro do cômodo). Se o P1 mudar isso, o
+    desenho não quebra, só deixa o rótulo onde está; é este teste que avisa.
+    """
+    plan = cramped()
+    ax = draw_plan(plan.plan, violations_of(plan))
+
+    for room in plan.plan.rooms:
+        label = room_label(ax, room)
+        assert label is not None, f"rótulo do {room.id} não encontrado"
+        assert label.get_text().startswith(f"{room.name}\n")
+
+    bedroom = next(room for room in plan.plan.rooms if room.id == "r3")
+    assert room_label(ax, bedroom).get_text().endswith("3 violações")
+
+
+def test_the_room_violation_count_moves_with_the_label() -> None:
+    """Nome, área e contagem são um texto só no P1, e vão juntos."""
+    plan = cramped()
+
+    ax = draw(plan)
+
+    moved = [t for t in ax.texts if t.get_text().startswith("Quarto\n")]
+    assert len(moved) == 1
+    assert moved[0].get_text() == "Quarto\n12,00 m²\n3 violações"
+    assert moved[0].get_position() != pytest.approx((2.0, 4.5))  # o centro
+
+
+def test_a_missing_room_label_does_not_break_the_drawing() -> None:
+    plan = furnished()
+    ax = draw_plan(plan.plan)
+    for text in list(ax.texts):
+        text.remove()
+
+    move_room_labels(ax, plan, CATALOG)
+
+    assert len(ax.texts) == 0
 
 
 # --- as faixas ---------------------------------------------------------------

@@ -22,6 +22,7 @@ from floorplan_guardrails.furniture import (
     FurnishingRequest,
     Profile,
     Segment,
+    footprint,
     load_catalog,
 )
 from floorplan_guardrails.furniture_rules import FurnitureRules, load_furniture_rules
@@ -738,3 +739,83 @@ def test_the_largest_square_does_not_enter_the_furniture_by_the_tolerance() -> N
     square = largest_free_square(room, [toilet])
 
     assert square.x1 - square.x0 == pytest.approx(2.35)
+
+
+def float_error_bathroom(origin: float, toilet_y: float) -> FurnishedPlan:
+    """Um banheiro de 1,50 m de largura com o vaso logo acima do espaço livre.
+
+    O espaço livre é um quadrado de exatamente 1,50 m, entre as paredes
+    oeste e leste e entre a parede sul e o vaso. As coordenadas carregam erro
+    de ponto flutuante: 0.1 + 0.2 vale 0.30000000000000004, e a largura do
+    cômodo, medida como fim menos início, sai 1.4999999999999998.
+    """
+    plan = FloorPlan(
+        rooms=[
+            Room(
+                id="r1",
+                type="bathroom",
+                name="Banheiro",
+                x=origin,
+                y=origin,
+                width=1.5,
+                depth=2.3,
+            )
+        ],
+        windows=[],
+        doors=[],
+        design_notes="",
+    )
+    proposal = {
+        "placements": [
+            {
+                "id": "m1",
+                "room_id": "r1",
+                "item_id": "toilet",
+                "x": origin,
+                "y": toilet_y,
+                "rotation": 0,
+            }
+        ],
+        "omissions": [],
+        "design_notes": "",
+    }
+    return FurnishedPlan(plan=plan, proposal=proposal)
+
+
+FLOAT_ERROR_CASES = [
+    # O cômodo com erro para cima, o vaso digitado.
+    pytest.param(0.1 + 0.2, 1.8, id="0.1+0.2, vaso em 1.8"),
+    # O vaso com erro para baixo: 0.1 + 0.7 + 1.0 vale 1.7999999999999998 e
+    # entra 2e-16 m no quadrado.
+    pytest.param(0.1 + 0.2, 0.1 + 0.7 + 1.0, id="0.1+0.2, vaso em 0.1+0.7+1.0"),
+    # O cômodo com erro para baixo: 0.7 + 0.1 vale 0.7999999999999999.
+    pytest.param(0.7 + 0.1, 2.3, id="0.7+0.1, vaso em 2.3"),
+]
+
+
+@pytest.mark.parametrize(("origin", "toilet_y"), FLOAT_ERROR_CASES)
+def test_turning_space_exactly_at_the_diameter_passes_despite_float_error(
+    origin: float, toilet_y: float
+) -> None:
+    """Fronteira do giro: o espaço livre é exatamente `turning_diameter`."""
+    plan = float_error_bathroom(origin, toilet_y)
+    request = FurnishingRequest(items={"r1": ["toilet"]})
+
+    toilet = footprint(plan.proposal.placements[0], CATALOG)
+    square = largest_free_square(plan.plan.rooms[0], [toilet])
+    assert square.x1 - square.x0 == pytest.approx(1.5)
+    assert inspect(plan, CATALOG, RULES, WHEELCHAIR, request) == []
+
+
+@pytest.mark.parametrize(("origin", "toilet_y"), FLOAT_ERROR_CASES)
+def test_turning_space_just_below_the_diameter_fails_despite_float_error(
+    origin: float, toilet_y: float
+) -> None:
+    """A mesma fronteira, com o vaso 5 cm mais baixo: sobra 1,45 m."""
+    plan = float_error_bathroom(origin, toilet_y - 0.05)
+    request = FurnishingRequest(items={"r1": ["toilet"]})
+
+    violations = inspect(plan, CATALOG, RULES, WHEELCHAIR, request)
+
+    assert [v.rule_id for v in violations] == ["turning_space"]
+    assert violations[0].measured == pytest.approx(1.45)
