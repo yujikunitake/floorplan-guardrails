@@ -120,7 +120,7 @@ flowchart TD
     V -- não --> X[Erro: planta de entrada inválida]
     V -- sim --> AC{Perfil acessível?}
     AC -- não --> M[Mobiliador<br/>agente MAF, saída estrita]
-    AC -- sim --> G{Algum cômodo sem giro<br/>nem vazio?<br/>código, sem modelo}
+    AC -- sim --> G{Algum cômodo não comporta<br/>o giro nem vazio?<br/>código, sem modelo}
     G -- sim --> IN[infeasible]
     G -- não --> M
     R[Pedido estruturado + perfil] --> M
