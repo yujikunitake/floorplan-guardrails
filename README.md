@@ -118,20 +118,21 @@ A negociação termina em um de quatro estados:
 flowchart TD
     P[Planta aprovada no P1] --> V{validate do P1<br/>sem violações?}
     V -- não --> X[Erro: planta de entrada inválida]
-    V -- sim --> G{Perfil acessível e cômodo<br/>sem giro nem vazio?}
-    G -- sim --> IN[infeasible<br/>sem chamar modelo]
-    G -- não --> M[Mobiliador<br/>agente MAF, saída estrita]
+    V -- sim --> AC{Perfil acessível?}
+    AC -- não --> M[Mobiliador<br/>agente MAF, saída estrita]
+    AC -- sim --> G{Algum cômodo sem giro<br/>nem vazio?<br/>código, sem modelo}
+    G -- sim --> IN[infeasible]
+    G -- não --> M
     R[Pedido estruturado + perfil] --> M
     C[(Catálogo)] --> M
     M --> O{Declarou omissão?}
     O -- sim --> D[declined]
-    O -- não --> F[Resolução de pegadas<br/>código]
-    F --> I1[Integridade<br/>código]
-    I1 -- falhou --> L
-    I1 -- ok --> I2[Circulação<br/>código]
-    I2 -- ok --> A[approved]
-    I2 -- falhou --> FI[Fiscal<br/>agente MAF redige parecer]
-    FI --> L{Rodadas restantes?}
+    O -- não --> I[inspect<br/>integridade e circulação juntas<br/>código]
+    I -- sem violações --> A[approved]
+    I -- só integridade --> MSG[Parecer com as<br/>mensagens do código]
+    I -- alguma de circulação --> FI[Fiscal<br/>agente MAF redige parecer]
+    MSG --> L{Rodadas restantes?}
+    FI --> L
     L -- sim --> M
     L -- não --> N[not_converged]
 ```

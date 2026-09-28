@@ -63,10 +63,10 @@ números medidos, e escreve a sugestão como posição final ("m5 em x = 0.00,
 y = 3.00, rotação 180"). Mesmo assim ele erra, e erra muito.
 
 Numa medição com 16 negociações, em 28/09/2026, com o deployment `gpt-5-mini`,
-o mobiliador seguiu ao pé da letra 57 de 66 sugestões do fiscal. Em 30 dessas
-57, o móvel movido voltou a ser reprovado na rodada seguinte: em 18 casos a
-sugestão criou um problema que não existia, e em 12 não resolveu o que
-pretendia ([relatório](avaliacao-p2.md)).
+o fiscal escreveu 66 sugestões com posição, e o mobiliador adotou 57 delas ao
+pé da letra. Das 57 sugestões adotadas, 30 falharam na rodada seguinte (18
+criaram violação nova, 12 não resolveram), segundo o
+[relatório](avaliacao-p2.md).
 
 Um desses casos ficou gravado em `examples/p2/replays/sugestao-errada.jsonl`.
 Na primeira rodada, o fiscal sugeriu encostar o guarda-roupa na parede sul do
